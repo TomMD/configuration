@@ -3,32 +3,45 @@ set nocompatible
 " Setup bundles
 filetype off
 
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
 
 " Vundle
-Bundle 'gmarik/vundle'
+Plugin 'VundleVim/Vundle.vim'
 
 " External packages
-Bundle 'tpope/vim-markdown'
-Bundle 'IndentAnything'
-Bundle 'OOP-javascript-indentation'
-Bundle 'aaronbieber/quicktask'
-Bundle 'Lokaltog/vim-powerline'
-Bundle "vim2hs"
-Bundle "neocomplcache"
-Bundle "neco-ghc"
+Plugin 'tpope/vim-markdown'
+Plugin 'tpope/vim-fugitive'
+Plugin 'bling/vim-airline'
+Plugin 'panagosg7/vim-annotations'
+Plugin 'dag/vim2hs'
+Plugin 'eagletmt/ghcmod-vim'
+Plugin 'triglav/vim-visual-increment'
+Plugin 'kien/ctrlp.vim'
+" Do you like a work flow of `vim File.hs ; get coffee ; do work`?
+" Plugin 'neocomplcache'
+" Plugin 'eagletmt/neco-ghc'
+Plugin 'ndmitchell/ghcid'
+Plugin 'Shougo/vimproc.vim'
+Plugin 'Twinside/vim-syntax-haskell-cabal'
+Plugin 'godlygeek/tabular'
+Plugin 'taku-o/vim-vis.git'
+Plugin 'tommcdo/vim-exchange'
 
-" Enable filetype detection
+call vundle#end()
 filetype plugin indent on
+syntax on
 
 set ignorecase smartcase
 
-" Allow backspacing over everything
+"" Allow backspacing over everything
 set backspace=indent,eol,start
-
-" Incremental searching
+"
+"" Incremental searching
 set incsearch
+set hlsearch
+set ignorecase
+set smartcase
 
 " Allow \ \ to kill the search highlighting.
 map <Leader><Leader> :noh<Enter>
@@ -37,7 +50,9 @@ map <Leader><Leader> :noh<Enter>
 set ruler
 
 " Fold by manually defined folds
-set foldenable
+" set foldenable
+" Get rid of folding (function hiding)
+set nofoldenable
 
 " Syntax
 if &t_Co > 2 || has("gui_running")
@@ -52,7 +67,7 @@ if has("spell")
 endif
 
 " Highlight lines longer than 80 chars
-let w:m80=matchadd('ErrorMsg', '\%>80v.\+', -1)
+" let w:m80=matchadd('ErrorMsg', '\%>80v.\+', -1)
 set textwidth=80
 
 " Highlight trailing space, and tab characters
@@ -65,6 +80,10 @@ set smarttab
 set shiftround
 set nojoinspaces
 
+highlight ghcmodType ctermbg=yellow
+let g:ghcmod_type_highlight = 'ghcmodType'
+highlight ghcmodType ctermbg=yellow
+
 " Automatic section commenting via "--s"
 let s:width = 80
 
@@ -74,70 +93,87 @@ function! HaskellModuleSection(...)
     return  repeat('-', s:width) . "\n"
     \       . "--  " . name . "\n"
     \       . "\n"
-
 endfunction
 
 nmap <silent> --s "=HaskellModuleSection()<CR>gp
 
-" Tab navigation
+"" Tab navigation
 nmap <C-n> gt
-nmap <C-p> gT
+nmap <C-m> gT
 
-" Disable the help key
+"" Disable the help key
 nmap <F1> <Esc>
 imap <F1> <Esc>
 
-" Print options
+"" Print options
 set printoptions=paper:letter
 
-" Completion options
+"" Completion options
 set wildmode=full
 set wildmenu
 set wildignore=*.o,*.hi,*.swp,*.bc
 
 " Colors!
-colors default
 set bg=dark
 
-" Disable the arrow keys when in edit mode
+"" Disable the arrow keys when in edit mode
 inoremap <Up> <NOP>
 inoremap <Right> <NOP>
 inoremap <Down> <NOP>
 inoremap <Left> <NOP>
+inoremap jk <Esc>
 
-" Set F2 as the binding to toggle the paste mode
-set pastetoggle=<F2>
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
 
-" Powerline config
+" Airline config
 set laststatus=2
-let g:Powerline_symbols = 'fancy'
 
 " F2 toggles paste mode
 set pastetoggle=<F2>
 
-" necomplcache for neco-ghc
+" neocomplcache for neco-ghc
+let g:acp_enableAtStartup = 0
+" Use neocomplcache
 let g:neocomplcache_enable_at_startup = 1
-
-" Plugin key-mappings.
-imap <C-k>     <Plug>(neocomplcache_snippets_expand)
-smap <C-k>     <Plug>(neocomplcache_snippets_expand)
-inoremap <expr><C-g>     neocomplcache#undo_completion()
-inoremap <expr><C-l>     neocomplcache#complete_common_string() 
-
-" Recommended key-mappings.
-" " <CR>: close popup and save indent.
-inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>" 
-" <TAB>: completion.
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>" 
-" <C-h>, <BS>: close popup and delete backword char.
-inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><C-y>  neocomplcache#close_popup()
-inoremap <expr><C-e>  neocomplcache#cancel_popup() 
+" Use smartcase.
+let g:neocomplcache_enable_smart_case = 1
+" Set minimum syntax keyword length.
+let g:neocomplcache_min_syntax_length = 3
+let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
 
 " Enable omni completion.
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags 
+autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
+
+" vim2hs unicode symbols
+" let g:haskell_conceal_wide = 1
+" alt: no concealing at all:
+let g:haskell_conceal = 0
+let g:haskell_conceal_enumerations = 0
+
+
+"
+"##############################################################################
+" Easier split navigation
+"##############################################################################
+"
+" Use ctrl-[hjkl] to select the active split!
+nmap <silent> <c-k> :wincmd k<CR>
+nmap <silent> <c-j> :wincmd j<CR>
+nmap <silent> <c-h> :wincmd h<CR>
+nmap <silent> <c-l> :wincmd l<CR>
+
+" Type checking
+nmap <silent> <c-t> :GhcModType<CR>
+nmap <silent> <c-r> :GhcModTypeClear<CR>
+nmap <silent> <c-c> :GhcModCheck<CR>
+nnoremap Q <nop>
+
+nmap <silent> <c-l> :SyntasticCheck liquid<CR>
+
+set encoding=utf8
+autocmd FileType haskell set cpoptions+=M
+
+let g:haskell_multiline_strings = 1
