@@ -27,6 +27,10 @@ Plugin 'Twinside/vim-syntax-haskell-cabal'
 Plugin 'godlygeek/tabular'
 Plugin 'taku-o/vim-vis.git'
 Plugin 'tommcdo/vim-exchange'
+Plugin 'elliottt/vim-haskell'
+Plugin 'scrooloose/syntastic'
+Plugin 'bitc/vim-hdevtools'
+Plugin 'Rykka/riv.vim'
 
 call vundle#end()
 filetype plugin indent on
@@ -62,8 +66,8 @@ endif
 
 " Spell checking
 if has("spell")
-    setlocal spell spelllang=en_us
-    set nospell
+    setlocal spelllang=en_us
+    setlocal nospell
 endif
 
 " Highlight lines longer than 80 chars
@@ -130,6 +134,10 @@ nnoremap <C-H> <C-W><C-H>
 
 " Airline config
 set laststatus=2
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+let g:airline_powerline_fonts=0
 
 " F2 toggles paste mode
 set pastetoggle=<F2>
@@ -177,3 +185,22 @@ set encoding=utf8
 autocmd FileType haskell set cpoptions+=M
 
 let g:haskell_multiline_strings = 1
+
+"
+" HDevTools support
+"
+
+au FileType haskell noremap <buffer> <F1> :HdevtoolsType<CR>
+au FileType haskell noremap <buffer> <silent> <F2> :HdevtoolsClear<CR>
+au FileType haskell noremap <buffer> <silent> <F3> :HdevtoolsInfo<CR>
+let g:syntastic_haskell_hdevtools_args = '-g-Wwarn -g-w -g-Wall'
+
+" Underline the current line with dashes in normal mode
+nnoremap <F5> yyp<c-v>$r-
+
+" Underline the current line with dashes in insert mode
+inoremap <F5> <Esc>yyp<c-v>$r-A
+
+" No RIV folding
+let g:riv_fold_level = 0
+let g:riv_fold_auto_update = 0

@@ -37,4 +37,16 @@ bindkey -M viins 'jk' vi-cmd-mode
 
 setopt rmstarsilent
 
+alias ls='ls -G'
 alias o=open
+alias top=top -o cpu
+export LANG="en_US.UTF-8"
+export LC_COLLATE="en_US.UTF-8"
+export LC_CTYPE="en_US.UTF-8"
+export LC_MESSAGES="en_US.UTF-8"
+export LC_MONETARY="en_US.UTF-8"
+export LC_NUMERIC="en_US.UTF-8"
+export LC_TIME="en_US.UTF-8"
+export LC_ALL=
+export PROMPT='%n@%m %2~%% '
+export PATH=$PATH:$HOME/.local/bin:$HOME/Library/Python/2.7/bin:/usr/local/sbin:$HOME/.cabal/bin:/usr/local/bin
