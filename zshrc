@@ -49,4 +49,8 @@ export LC_NUMERIC="en_US.UTF-8"
 export LC_TIME="en_US.UTF-8"
 export LC_ALL=
 export PROMPT='%n@%m %2~%% '
-export PATH=$PATH:$HOME/.local/bin:$HOME/Library/Python/2.7/bin:/usr/local/sbin:$HOME/.cabal/bin:/usr/local/bin
+export PATH=/usr/local/bin:$PATH:$HOME/.local/bin:/usr/local/sbin:$HOME/.cabal/bin
+source $HOME/.zshrc_private_stuff
+export REPORTTIME=10
+
+alias vi=vim

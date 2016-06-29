@@ -15,22 +15,21 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'bling/vim-airline'
 Plugin 'panagosg7/vim-annotations'
 Plugin 'dag/vim2hs'
-" Plugin 'eagletmt/ghcmod-vim'
 Plugin 'triglav/vim-visual-increment'
 Plugin 'kien/ctrlp.vim'
-" Do you like a work flow of `vim File.hs ; get coffee ; do work`?
-" Plugin 'neocomplcache'
-" Plugin 'eagletmt/neco-ghc'
 Plugin 'ndmitchell/ghcid'
 Plugin 'Shougo/vimproc.vim'
 Plugin 'Twinside/vim-syntax-haskell-cabal'
 Plugin 'godlygeek/tabular'
 Plugin 'taku-o/vim-vis.git'
 Plugin 'tommcdo/vim-exchange'
+Bundle 'airblade/vim-gitgutter'
 Plugin 'elliottt/vim-haskell'
-Plugin 'scrooloose/syntastic'
 Plugin 'bitc/vim-hdevtools'
 Plugin 'Rykka/riv.vim'
+Plugin 'tpope/vim-abolish'
+Plugin 'dmwit/vim-cryptol'
+Plugin 'fsharp/vim-fsharp'
 
 call vundle#end()
 filetype plugin indent on
@@ -87,6 +86,7 @@ set nojoinspaces
 highlight ghcmodType ctermbg=yellow
 let g:ghcmod_type_highlight = 'ghcmodType'
 highlight ghcmodType ctermbg=yellow
+let g:hlint_args = '-i "Redundant bracket"'
 
 " Automatic section commenting via "--s"
 let s:width = 80
@@ -173,13 +173,10 @@ nmap <silent> <c-j> :wincmd j<CR>
 nmap <silent> <c-h> :wincmd h<CR>
 nmap <silent> <c-l> :wincmd l<CR>
 
-" Type checking
-nmap <silent> <c-t> :GhcModType<CR>
-nmap <silent> <c-r> :GhcModTypeClear<CR>
-nmap <silent> <c-c> :GhcModCheck<CR>
+vnoremap <silent> s :'<,'>sort /import\(\s\+qualified\)\?\s\+/<CR>
 nnoremap Q <nop>
 
-nmap <silent> <c-l> :SyntasticCheck liquid<CR>
+nmap <silent> <c-q> :SyntasticCheck liquid<CR>
 
 set encoding=utf8
 autocmd FileType haskell set cpoptions+=M
@@ -204,3 +201,4 @@ inoremap <F5> <Esc>yyp<c-v>$r-A
 " No RIV folding
 let g:riv_fold_level = 0
 let g:riv_fold_auto_update = 0
+au BufRead,BufNewFile *.md setlocal textwidth=80

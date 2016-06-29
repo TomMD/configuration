@@ -7,3 +7,6 @@ mkdir -p $HOME/.vim/bundle
 cd $HOME/.vim/bundle
 git clone https://github.com/VundleVim/Vundle.vim.git
 vim +PluginInstall +qall
+if [ -e stack ] ; then
+    stack update && stack install hdevtools
+fi
