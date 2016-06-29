@@ -15,7 +15,7 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'bling/vim-airline'
 Plugin 'panagosg7/vim-annotations'
 Plugin 'dag/vim2hs'
-Plugin 'eagletmt/ghcmod-vim'
+" Plugin 'eagletmt/ghcmod-vim'
 Plugin 'triglav/vim-visual-increment'
 Plugin 'kien/ctrlp.vim'
 " Do you like a work flow of `vim File.hs ; get coffee ; do work`?
