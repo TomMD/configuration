@@ -50,7 +50,9 @@ export LC_TIME="en_US.UTF-8"
 export LC_ALL=
 export PROMPT='%n@%m %2~%% '
 export PATH=/usr/local/bin:$PATH:$HOME/.local/bin:/usr/local/sbin:$HOME/.cabal/bin
-source $HOME/.zshrc_private_stuff
+if [ -e $HOME/.zshrc_private_stuff ] ; then
+    source $HOME/.zshrc_private_stuff
+fi
 export REPORTTIME=10
 
 alias vi=vim
