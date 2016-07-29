@@ -16,22 +16,25 @@ Plugin 'bling/vim-airline'
 Plugin 'panagosg7/vim-annotations'
 Plugin 'dag/vim2hs'
 Plugin 'triglav/vim-visual-increment'
-Plugin 'kien/ctrlp.vim'
+" Plugin 'kien/ctrlp.vim'
 Plugin 'ndmitchell/ghcid'
 Plugin 'Shougo/vimproc.vim'
 Plugin 'Twinside/vim-syntax-haskell-cabal'
-Plugin 'godlygeek/tabular'
+" Plugin 'godlygeek/tabular'
+Plugin 'tommcdo/vim-lion'
 Plugin 'taku-o/vim-vis.git'
 Plugin 'tommcdo/vim-exchange'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'elliottt/vim-haskell'
 Plugin 'bitc/vim-hdevtools'
-Plugin 'Rykka/riv.vim'
+" Plugin 'Rykka/riv.vim'
 Plugin 'tpope/vim-abolish'
 Plugin 'dmwit/vim-cryptol'
 Plugin 'fsharp/vim-fsharp'
 Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
+" surround
+" easymotion
 
 call vundle#end()
 filetype plugin indent on
