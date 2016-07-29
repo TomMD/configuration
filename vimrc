@@ -23,19 +23,25 @@ Plugin 'Twinside/vim-syntax-haskell-cabal'
 Plugin 'godlygeek/tabular'
 Plugin 'taku-o/vim-vis.git'
 Plugin 'tommcdo/vim-exchange'
-Bundle 'airblade/vim-gitgutter'
+Plugin 'airblade/vim-gitgutter'
 Plugin 'elliottt/vim-haskell'
 Plugin 'bitc/vim-hdevtools'
 Plugin 'Rykka/riv.vim'
 Plugin 'tpope/vim-abolish'
 Plugin 'dmwit/vim-cryptol'
 Plugin 'fsharp/vim-fsharp'
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
 
 call vundle#end()
 filetype plugin indent on
 syntax on
 
 set ignorecase smartcase
+
+" Trigger configuration. Do not use <tab> if you use
+" https://github.com/Valloric/YouCompleteMe.
+let g:UltiSnipsExpandTrigger="<tab>"
 
 "" Allow backspacing over everything
 set backspace=indent,eol,start
