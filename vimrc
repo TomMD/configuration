@@ -14,7 +14,6 @@ Plugin 'tpope/vim-markdown'
 Plugin 'tpope/vim-fugitive'
 Plugin 'bling/vim-airline'
 Plugin 'panagosg7/vim-annotations'
-Plugin 'dag/vim2hs'
 Plugin 'triglav/vim-visual-increment'
 " Plugin 'kien/ctrlp.vim'
 Plugin 'ndmitchell/ghcid'
@@ -164,13 +163,6 @@ let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
 " Enable omni completion.
 autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
 
-" vim2hs unicode symbols
-" let g:haskell_conceal_wide = 1
-" alt: no concealing at all:
-let g:haskell_conceal = 0
-let g:haskell_conceal_enumerations = 0
-
-
 "
 "##############################################################################
 " Easier split navigation
@@ -211,3 +203,6 @@ inoremap <F5> <Esc>yyp<c-v>$r-A
 let g:riv_fold_level = 0
 let g:riv_fold_auto_update = 0
 au BufRead,BufNewFile *.md setlocal textwidth=80
+
+" Transform 'import A.B' into 'import A.B (B) ; import qualified A.B as B'
+let @i="0elcw           \<ESC>$byawA (\<ESC>pA)\<ESC>yypellRqualified\<ESC>$xbXias \<ESC>"
