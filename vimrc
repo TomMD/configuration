@@ -15,7 +15,7 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'bling/vim-airline'
 Plugin 'panagosg7/vim-annotations'
 Plugin 'triglav/vim-visual-increment'
-" Plugin 'kien/ctrlp.vim'
+Plugin 'kien/ctrlp.vim'
 Plugin 'ndmitchell/ghcid'
 Plugin 'Shougo/vimproc.vim'
 Plugin 'Twinside/vim-syntax-haskell-cabal'
@@ -30,8 +30,10 @@ Plugin 'bitc/vim-hdevtools'
 Plugin 'tpope/vim-abolish'
 Plugin 'dmwit/vim-cryptol'
 Plugin 'fsharp/vim-fsharp'
-Plugin 'SirVer/ultisnips'
+" Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
+Plugin 'mk12/vim-lean'
+" Plugin 'neomake/neomake'
 " surround
 " easymotion
 
@@ -43,7 +45,7 @@ set ignorecase smartcase
 
 " Trigger configuration. Do not use <tab> if you use
 " https://github.com/Valloric/YouCompleteMe.
-let g:UltiSnipsExpandTrigger="<tab>"
+" let g:UltiSnipsExpandTrigger="<tab>"
 
 "" Allow backspacing over everything
 set backspace=indent,eol,start
@@ -78,7 +80,7 @@ if has("spell")
 endif
 
 " Highlight lines longer than 80 chars
-" let w:m80=matchadd('ErrorMsg', '\%>80v.\+', -1)
+let w:m80=matchadd('ErrorMsg', '\%>80v.\+', -1)
 set textwidth=80
 
 " Highlight trailing space, and tab characters
@@ -200,9 +202,12 @@ nnoremap <F5> yyp<c-v>$r-
 inoremap <F5> <Esc>yyp<c-v>$r-A
 
 " No RIV folding
-let g:riv_fold_level = 0
-let g:riv_fold_auto_update = 0
+" let g:riv_fold_level = 0
+" let g:riv_fold_auto_update = 0
 au BufRead,BufNewFile *.md setlocal textwidth=80
 
 " Transform 'import A.B' into 'import A.B (B) ; import qualified A.B as B'
 let @i="0elcw           \<ESC>$byawA (\<ESC>pA)\<ESC>yypellRqualified\<ESC>$xbXias \<ESC>"
+
+" Open tags in new tabs
+nnoremap <silent><C-[> <C-w><C-]><C-w>T
