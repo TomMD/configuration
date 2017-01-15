@@ -33,6 +33,7 @@ Plugin 'fsharp/vim-fsharp'
 " Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
 Plugin 'mk12/vim-lean'
+Plugin 'scrooloose/syntastic'
 " Plugin 'neomake/neomake'
 " surround
 " easymotion
@@ -179,7 +180,8 @@ nmap <silent> <c-l> :wincmd l<CR>
 vnoremap <silent> s :'<,'>sort /import\(\s\+qualified\)\?\s\+/<CR>
 nnoremap Q <nop>
 
-nmap <silent> <c-q> :SyntasticCheck liquid<CR>
+nmap <silent> <c-t> :SyntasticCheck liquid<CR>
+let g:vim_annotations_offset = '/.liquid/'
 
 set encoding=utf8
 autocmd FileType haskell set cpoptions+=M
@@ -190,10 +192,10 @@ let g:haskell_multiline_strings = 1
 " HDevTools support
 "
 
-au FileType haskell noremap <buffer> <F1> :HdevtoolsType<CR>
-au FileType haskell noremap <buffer> <silent> <F2> :HdevtoolsClear<CR>
-au FileType haskell noremap <buffer> <silent> <F3> :HdevtoolsInfo<CR>
-let g:syntastic_haskell_hdevtools_args = '-g-Wwarn -g-w -g-Wall'
+" au FileType haskell noremap <buffer> <F1> :HdevtoolsType<CR>
+" au FileType haskell noremap <buffer> <silent> <F2> :HdevtoolsClear<CR>
+" au FileType haskell noremap <buffer> <silent> <F3> :HdevtoolsInfo<CR>
+" let g:syntastic_haskell_hdevtools_args = '-g-Wwarn -g-w -g-Wall'
 
 " Underline the current line with dashes in normal mode
 nnoremap <F5> yyp<c-v>$r-
