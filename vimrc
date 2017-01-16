@@ -181,6 +181,7 @@ vnoremap <silent> s :'<,'>sort /import\(\s\+qualified\)\?\s\+/<CR>
 nnoremap Q <nop>
 
 nmap <silent> <c-t> :SyntasticCheck liquid<CR>
+let g:syntastic_haskell_checkers = []
 let g:vim_annotations_offset = '/.liquid/'
 
 set encoding=utf8
