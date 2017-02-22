@@ -37,9 +37,15 @@ bindkey -M viins 'jk' vi-cmd-mode
 
 setopt rmstarsilent
 
-alias ls='ls -G'
-alias o=open
-alias top=top -o cpu
+if [ "`uname`" = "Darwin" ] ; then
+    alias ls='ls -G'
+    alias o=open
+    alias top='top -o cpu'
+    alias md5sum='md5 -r'
+else
+    alias ls='ls --color -G'
+    alias o=xdg-open
+fi
 export LANG="en_US.UTF-8"
 export LC_COLLATE="en_US.UTF-8"
 export LC_CTYPE="en_US.UTF-8"
@@ -49,10 +55,48 @@ export LC_NUMERIC="en_US.UTF-8"
 export LC_TIME="en_US.UTF-8"
 export LC_ALL=
 export PROMPT='%n@%m %2~%% '
-export PATH=/usr/local/bin:$PATH:$HOME/.local/bin:/usr/local/sbin:$HOME/.cabal/bin
-if [ -e $HOME/.zshrc_private_stuff ] ; then
-    source $HOME/.zshrc_private_stuff
-fi
-export REPORTTIME=10
+export PATH=$HOME/.local/bin:/usr/local/bin:$PATH:$HOME/Library/Python/2.7/bin:/usr/local/sbin:$HOME/.cabal/bin
+export REPORTTIME=1
+alias vi=nvim
+bindkey '^R' history-incremental-search-backward
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 
-alias vi=vim
+# GPG Junk
+export SSH_AUTH_SOCK=$HOME/.gnupg/S.gpg-agent.ssh
+# export VAGRANT_DEFAULT_PROVIDER=ovirt3
+if [ -f "${HOME}/.gpg-agent-info" ]; then
+  . "${HOME}/.gpg-agent-info"
+  export GPG_AGENT_INFO
+  export SSH_AUTH_SOCK
+fi
+
+# Nix, ghcup
+export PATH=$HOME/.ghcup/bin:$PATH:$HOME/.nix-profile/bin
+export EDITOR=nvim
+
+if [ -e "$HOME/.zshrc_private_stuff" ]; then
+     source $HOME/.zshrc_private_stuff
+ fi
+
+runHaskTagsVim() {
+      # use --etags instead of --ctags for emacs
+      hasktags --ctags .; sort tags
+}
+mkTags() {
+    runHaskTagsVim
+}
+
+KEYTIMEOUT=0
+export TERM=screen-256color
+
+# For ghc as packaged by ghchq. Might help for nix packaging too
+export LIBRARY_PATH=/usr/lib:/opt/local/lib
+
+# Completions
+fpath=($HOME/dev/configuration/zsh-completions/src $fpath)
+
+if [[ -f $HOME/ghcup/env ]] ; then
+    source "$HOME/.ghcup/env"
+fi
+
+if [ $commands[kubectl] ]; then source <(kubectl completion zsh); fi

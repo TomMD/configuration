@@ -34,6 +34,7 @@ Plugin 'fsharp/vim-fsharp'
 Plugin 'honza/vim-snippets'
 Plugin 'mk12/vim-lean'
 Plugin 'scrooloose/syntastic'
+Plugin 'michaeljsmith/vim-indent-object'
 " Plugin 'neomake/neomake'
 " surround
 " easymotion
@@ -137,6 +138,8 @@ inoremap <Right> <NOP>
 inoremap <Down> <NOP>
 inoremap <Left> <NOP>
 inoremap jk <Esc>
+inoremap <C-u>bc <C-V>u2235
+" Ctrl-u+b+c ~ unicode 'because'
 
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
@@ -185,6 +188,8 @@ let g:syntastic_haskell_checkers = []
 let g:vim_annotations_offset = '/.liquid/'
 
 set encoding=utf8
+
+" Make '%' and company handle nested parens
 autocmd FileType haskell set cpoptions+=M
 
 let g:haskell_multiline_strings = 1
