@@ -14,7 +14,7 @@ if [[ -x "$(which nvim)" ]] ; then
     fi
     if [[ -x "$(which pip3)" ]] ; then
         pip3 install neovim
-        nvim +NeoBundleInstall +qall
+        nvim +NeoBundleInstall +qall --headless
     fi
 fi
 
