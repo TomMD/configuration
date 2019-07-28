@@ -28,9 +28,6 @@ NeoBundle 'neomake/neomake'
 " Type information via GHCmod
 " NeoBundle 'eagletmt/ghcmod-vim'
 
-" IDE-like features but requires stack...
-" NeoBundle 'parsonsmatt/intero-neovim'
-
 " Pope packages
 NeoBundle 'tpope/vim-markdown'
 NeoBundle 'tpope/vim-fugitive'
@@ -50,7 +47,10 @@ NeoBundle 'taku-o/vim-vis.git'
 NeoBundle 'tommcdo/vim-exchange'
 
 " IHE
-NeoBundle 'autozimu/LanguageClient-neovim', {'build': {'unix': './install.sh'} }
+NeoBundle 'autozimu/LanguageClient-neovim',
+            \ { 'rev' : 'next'
+            \ , 'build_command': './install.sh' }
+NeoBundle 'haskell/haskell-ide-engine'
 
 " Show what has changed since commit on the left gutter.
 NeoBundle 'airblade/vim-gitgutter'
@@ -252,6 +252,20 @@ let g:ghci_command_line_options = '-fobject-code'
 " Bug in ghci wrt how it thinks ghci is started/not loaded
 let g:ghci_started = 0
 
+" Set HIE startup
+" let g:LanguageClient_rootMarkers = ['*.cabal', 'cabal.project']
+let g:LanguageClient_rootMarkers = ['cabal.project']
+" Automatically start language servers.
+let g:LanguageClient_autoStart = 1
+let g:LanguageClient_settingsPath='$HOME/.config/nvim/languageclient.json'
+let g:LanguageClient_loggingLevel='DEBUG'
+let g:LanguageClient_loggingFile='/tmp/languageclient.log'
+
+let g:LanguageClient_serverCommands = {
+    \ 'haskell': ['hie-wrapper', '--lsp', '-d', '--vomit', '--logfile', '/tmp/hie.log'],
+    \ 'rust': ['rustup', 'run', 'stable', 'rls'],
+    \ }
+
 " Tagbar
 nmap <F8> :TagbarToggle<CR>
 
@@ -259,3 +273,16 @@ nmap <F8> :TagbarToggle<CR>
 tnoremap <Esc> <C-\><C-n>
 
 vnoremap <leader>bb ! brittany<CR>
+
+" IDE Engine and LangaugeClient
+set rtp+=~/.config/nvim/bundle/LanguageClient-neovim_next
+
+nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+map <Leader>lk :call LanguageClient#textDocument_hover()<CR>
+map <Leader>lg :call LanguageClient#textDocument_definition()<CR>
+map <Leader>lr :call LanguageClient#textDocument_rename()<CR>
+map <Leader>lf :call LanguageClient#textDocument_formatting()<CR>
+map <Leader>lb :call LanguageClient#textDocument_references()<CR>
+map <Leader>la :call LanguageClient#textDocument_codeAction()<CR>
+map <Leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
+map <Leader>lt :call LanguageClient#textDocument_type()<CR>

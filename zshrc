@@ -100,3 +100,11 @@ if [[ -f $HOME/ghcup/env ]] ; then
 fi
 
 if [ $commands[kubectl] ]; then source <(kubectl completion zsh); fi
+
+if [ -f "$HOME/.nix-profile/etc/ssl/certs/ca-bundle.crt" ] ; then
+    export SSL_CERT_FILE=~/.nix-profile/etc/ssl/certs/ca-bundle.crt
+fi
+
+if [ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ] ; then
+    source $HOME/.nix-profile/etc/profile.d/nix.sh
+fi
