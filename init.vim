@@ -1,75 +1,60 @@
-" NeoBundle Scripts-----------------------------
-if has('vim_starting')  
-  set runtimepath+=~/.config/nvim/bundle/neobundle.vim/
-  set runtimepath+=~/.config/nvim/
-endif
+call plug#begin()
 
-let neobundle_readme=expand('~/.config/nvim/bundle/neobundle.vim/README.md')
-
-if !filereadable(neobundle_readme)  
-  echo "Installing NeoBundle..."
-  echo ""
-  silent !mkdir -p ~/.config/nvim/bundle
-  silent !git clone https://github.com/Shougo/neobundle.vim ~/.config/nvim/bundle/neobundle.vim/
-  let g:not_finsh_neobundle = "yes"
-endif
-
-call neobundle#begin(expand('$HOME/.config/nvim/bundle'))  
+" Intel engine, leveraging HIE
+Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
+" 
+Plug 'neovimhaskell/haskell-vim'
+Plug 'alx741/vim-hindent'
+Plug 'mpickering/hlint-refactor-vim'
 
 " Auto completions general support
-NeoBundle 'Shougo/deoplete.nvim'
-
+" Plug 'Shougo/deoplete.nvim'
 " Auto completions for Haskell (leveraging deoplete)
-NeoBundle 'eagletmt/neco-ghc'
+" Plug 'eagletmt/neco-ghc'
 
-NeoBundle 'owickstrom/neovim-ghci'
-NeoBundle 'neomake/neomake'
+Plug 'owickstrom/neovim-ghci'
+Plug 'neomake/neomake'
 
-" Type information via GHCmod
-" NeoBundle 'eagletmt/ghcmod-vim'
-
-" Pope packages
-NeoBundle 'tpope/vim-markdown'
-NeoBundle 'tpope/vim-fugitive'
-NeoBundle 'tpope/vim-abolish'
+" :Gcommit, :Gdiff etc
+Plug 'tpope/vim-fugitive'
 
 " Status bar at bottom
-NeoBundle 'bling/vim-airline'
-NeoBundle 'panagosg7/vim-annotations'
-NeoBundle 'triglav/vim-visual-increment'
+Plug 'bling/vim-airline'
+" Vim plugin for displaying type annotations of TypeScript programs produced by RefScript
+Plug 'panagosg7/vim-annotations'
+" use CTRL+A/X to create increasing sequence of numbers or letters via visual mode
+Plug 'triglav/vim-visual-increment'
 
 " C-p to open files with fuzzy match
-NeoBundle 'kien/ctrlp.vim'
+Plug 'kien/ctrlp.vim'
 
 " Aline things among other ops
-NeoBundle 'tommcdo/vim-lion'
-NeoBundle 'taku-o/vim-vis.git'
-NeoBundle 'tommcdo/vim-exchange'
+Plug 'tommcdo/vim-lion'
+
+" Shell commands on visual blocks
+Plug 'taku-o/vim-vis'
 
 " IHE
-NeoBundle 'autozimu/LanguageClient-neovim',
-            \ { 'rev' : 'next'
-            \ , 'build_command': './install.sh' }
-NeoBundle 'haskell/haskell-ide-engine'
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': './install.sh'
+    \ }
+Plug 'haskell/haskell-ide-engine'
 
 " Show what has changed since commit on the left gutter.
-NeoBundle 'airblade/vim-gitgutter'
+Plug 'airblade/vim-gitgutter'
 
 " Syntax rules for Cryptol
-NeoBundle 'dmwit/vim-cryptol'
+Plug 'dmwit/vim-cryptol'
 
 " Syntax rules for fsharp
-NeoBundle 'fsharp/vim-fsharp'
-
-NeoBundle 'honza/vim-snippets'
+Plug 'fsharp/vim-fsharp'
 
 " Tag bar provides bar on RHS showing top level defs, etc.
 " i.e. nmap <F8> :TagbarToggle<CR>
-NeoBundle 'majutsushi/tagbar'
+Plug 'majutsushi/tagbar'
 
-" General syntax support
-" NeoBundle 'scrooloose/syntastic'
-call neobundle#end()
+call plug#end()
 
 filetype plugin indent on
 syntax on
@@ -91,12 +76,6 @@ map <Leader><Leader> :noh<Enter>
 
 " Always show cursor position
 set ruler
-
-" Syntax
-" if &t_Co > 2 || has("gui_running")
-"    syntax enable
-"    set hlsearch
-" endif
 
 " Spell checking
 if has("spell")
@@ -122,7 +101,7 @@ set nojoinspaces
 let g:ghcmod_type_highlight = 'ghcmodType'
 " highlight ghcmodType ctermbg=yellow
 let g:hlint_args = '-i "Redundant bracket"'
-" 
+
 " " Automatic section commenting via "--s"
 let s:width = 80
  
@@ -261,9 +240,10 @@ let g:LanguageClient_settingsPath='$HOME/.config/nvim/languageclient.json'
 let g:LanguageClient_loggingLevel='DEBUG'
 let g:LanguageClient_loggingFile='/tmp/languageclient.log'
 
+" IDE Engine and LangaugeClient
+set rtp+=~/.config/nvim/bundle/LanguageClient-neovim_next
 let g:LanguageClient_serverCommands = {
     \ 'haskell': ['hie-wrapper', '--lsp', '-d', '--vomit', '--logfile', '/tmp/hie.log'],
-    \ 'rust': ['rustup', 'run', 'stable', 'rls'],
     \ }
 
 " Tagbar
@@ -274,8 +254,6 @@ tnoremap <Esc> <C-\><C-n>
 
 vnoremap <leader>bb ! brittany<CR>
 
-" IDE Engine and LangaugeClient
-set rtp+=~/.config/nvim/bundle/LanguageClient-neovim_next
 
 nnoremap <F5> :call LanguageClient_contextMenu()<CR>
 map <Leader>lk :call LanguageClient#textDocument_hover()<CR>
