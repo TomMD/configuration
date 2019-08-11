@@ -2,8 +2,11 @@ call plug#begin()
 
 " Intel engine, leveraging HIE
 Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
-" 
+
+" Indentation and highlighting
 Plug 'neovimhaskell/haskell-vim'
+
+" Use `:Hindent`
 Plug 'alx741/vim-hindent'
 Plug 'mpickering/hlint-refactor-vim'
 
@@ -179,6 +182,9 @@ nnoremap Q <nop>
 " let g:syntastic_haskell_checkers = []
 " let g:vim_annotations_offset = '/.liquid/'
 
+" No re-formatting on save please
+let g:hindent_on_save = 0
+
 " Make '%' and company handle nested parens
 autocmd FileType haskell set cpoptions+=M
 
@@ -263,4 +269,4 @@ map <Leader>lf :call LanguageClient#textDocument_formatting()<CR>
 map <Leader>lb :call LanguageClient#textDocument_references()<CR>
 map <Leader>la :call LanguageClient#textDocument_codeAction()<CR>
 map <Leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
-map <Leader>lt :call LanguageClient#textDocument_type()<CR>
+map <Leader>lt :call LanguageClient#textDocument_typeDefinition()<CR>
