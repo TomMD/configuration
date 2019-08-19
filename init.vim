@@ -7,7 +7,7 @@ Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
 Plug 'neovimhaskell/haskell-vim'
 
 " Use `:Hindent`
-Plug 'alx741/vim-hindent'
+" Plug 'alx741/vim-hindent'
 Plug 'mpickering/hlint-refactor-vim'
 
 " Auto completions general support
@@ -182,9 +182,6 @@ nnoremap Q <nop>
 " let g:syntastic_haskell_checkers = []
 " let g:vim_annotations_offset = '/.liquid/'
 
-" No re-formatting on save please
-let g:hindent_on_save = 0
-
 " Make '%' and company handle nested parens
 autocmd FileType haskell set cpoptions+=M
 
@@ -239,7 +236,7 @@ let g:ghci_started = 0
 
 " Set HIE startup
 " let g:LanguageClient_rootMarkers = ['*.cabal', 'cabal.project']
-let g:LanguageClient_rootMarkers = ['cabal.project']
+let g:LanguageClient_rootMarkers = ['cabal.project','*.cabal']
 " Automatically start language servers.
 let g:LanguageClient_autoStart = 1
 let g:LanguageClient_settingsPath='$HOME/.config/nvim/languageclient.json'
@@ -266,7 +263,10 @@ map <Leader>lk :call LanguageClient#textDocument_hover()<CR>
 map <Leader>lg :call LanguageClient#textDocument_definition()<CR>
 map <Leader>lr :call LanguageClient#textDocument_rename()<CR>
 map <Leader>lf :call LanguageClient#textDocument_formatting()<CR>
+map <Leader>ld :call LanguageClient#textDocument_rangeFormatting()<CR>
 map <Leader>lb :call LanguageClient#textDocument_references()<CR>
 map <Leader>la :call LanguageClient#textDocument_codeAction()<CR>
 map <Leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
 map <Leader>lt :call LanguageClient#textDocument_typeDefinition()<CR>
+nmap <leader>lf  <Plug>(coc-fix-current)
+nnoremap <leader><leader>lF :call CocAction('format')<CR>
