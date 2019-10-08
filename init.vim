@@ -1,10 +1,14 @@
 call plug#begin()
 
-" Intel engine, leveraging HIE
-Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
+" Intel engine, leveraging LSP
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
 
 " Indentation and highlighting
 Plug 'neovimhaskell/haskell-vim'
+
+"
+Plug 'dense-analysis/ale'
 
 " Use `:Hindent`
 " Plug 'alx741/vim-hindent'
@@ -36,13 +40,6 @@ Plug 'tommcdo/vim-lion'
 
 " Shell commands on visual blocks
 Plug 'taku-o/vim-vis'
-
-" IHE
-Plug 'autozimu/LanguageClient-neovim', {
-    \ 'branch': 'next',
-    \ 'do': './install.sh'
-    \ }
-Plug 'haskell/haskell-ide-engine'
 
 " Show what has changed since commit on the left gutter.
 Plug 'airblade/vim-gitgutter'
@@ -234,21 +231,6 @@ let g:ghci_command_line_options = '-fobject-code'
 " Bug in ghci wrt how it thinks ghci is started/not loaded
 let g:ghci_started = 0
 
-" Set HIE startup
-" let g:LanguageClient_rootMarkers = ['*.cabal', 'cabal.project']
-let g:LanguageClient_rootMarkers = ['cabal.project','*.cabal']
-" Automatically start language servers.
-let g:LanguageClient_autoStart = 1
-let g:LanguageClient_settingsPath='$HOME/.config/nvim/languageclient.json'
-let g:LanguageClient_loggingLevel='DEBUG'
-let g:LanguageClient_loggingFile='/tmp/languageclient.log'
-
-" IDE Engine and LangaugeClient
-set rtp+=~/.config/nvim/bundle/LanguageClient-neovim_next
-let g:LanguageClient_serverCommands = {
-    \ 'haskell': ['hie-wrapper', '--lsp', '-d', '--vomit', '--logfile', '/tmp/hie.log'],
-    \ }
-
 " Tagbar
 nmap <F8> :TagbarToggle<CR>
 
@@ -257,16 +239,30 @@ tnoremap <Esc> <C-\><C-n>
 
 vnoremap <leader>bb ! brittany<CR>
 
+" Set LSP startup
+au User lsp_setup call lsp#register_server({
+    \ 'name': 'ghcide',
+    \ 'cmd': {server_info->[expand('~/.cabal/bin/ghcide'), '--lsp']},
+    \ 'whitelist': ['haskell'],
+    \ })
+let g:lsp_log_verbose = 1
+let g:lsp_log_file = expand('~/vim-lsp.log')
 
 nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-map <Leader>lk :call LanguageClient#textDocument_hover()<CR>
-map <Leader>lg :call LanguageClient#textDocument_definition()<CR>
-map <Leader>lr :call LanguageClient#textDocument_rename()<CR>
-map <Leader>lf :call LanguageClient#textDocument_formatting()<CR>
-map <Leader>ld :call LanguageClient#textDocument_rangeFormatting()<CR>
-map <Leader>lb :call LanguageClient#textDocument_references()<CR>
-map <Leader>la :call LanguageClient#textDocument_codeAction()<CR>
-map <Leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
-map <Leader>lt :call LanguageClient#textDocument_typeDefinition()<CR>
-nmap <leader>lf  <Plug>(coc-fix-current)
-nnoremap <leader><leader>lF :call CocAction('format')<CR>
+map <Leader>lh :LspHover<CR>
+map <Leader>lg :LspDefinition<CR>
+map <Leader>lr :LspRename<CR>
+map <Leader>lF :LspDocumentFormat<CR>
+map <Leader>lf :LspDocumentRangeFormat<CR>
+map <Leader>ls :LspDocumentSymbol<CR>
+map <Leader>ls :LspDocumentSymbol<CR>
+map <Leader>li :LspImplementation<CR>
+map <Leader>ln :LspNextError<CR>
+map <Leader>lpi :LspPeekImplementation<CR>
+map <Leader>lpt :LspPeekTypeDefinition<CR>
+map <Leader>lpd :LspPeekDeclaration<CR>
+map <Leader>lpf :LspPeekDefinition<CR>
+" Like "lsp who uses this"
+map <Leader>lw :LspReferences<CR>
+
+nmap <leader>lx  <Plug>(coc-fix-current)
