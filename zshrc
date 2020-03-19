@@ -80,7 +80,7 @@ if [ -e "$HOME/.zshrc_private_stuff" ]; then
 
 runHaskTagsVim() {
       # use --etags instead of --ctags for emacs
-      hasktags --ctags .; sort tags
+      hasktags --ctags .
 }
 mkTags() {
     runHaskTagsVim
@@ -90,7 +90,7 @@ KEYTIMEOUT=0
 export TERM=screen-256color
 
 # For ghc as packaged by ghchq. Might help for nix packaging too
-export LIBRARY_PATH=/usr/lib:/opt/local/lib
+export LIBRARY_PATH=/usr/lib
 
 # Completions
 fpath=($HOME/dev/configuration/zsh-completions/src $fpath)
