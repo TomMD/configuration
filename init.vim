@@ -3,26 +3,34 @@ call plug#begin()
 " Intel engine, leveraging LSP
 Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/vim-lsp'
+Plug 'mattn/vim-lsp-settings'
+
+" LC-neovim does not hover either - can not determine project on v2
+" Plug 'autozimu/LanguageClient-neovim' , {
+"     \ 'branch': 'next',
+"     \ 'do': 'bash install.sh',
+"     \ }
+
+" It underlines everything in an ugly manner when language server fails.
+" N.B. this will invoke cabal, ghc, etc.
+" UGH: Causes horrible underlining and interupting message on failure.
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Indentation and highlighting
-Plug 'neovimhaskell/haskell-vim'
+" Plug 'neovimhaskell/haskell-vim'
 
-"
-Plug 'dense-analysis/ale'
+" Ale injects linting information such as shellcheck and hlint
+" N.B. This will run cabal/ghc when editing.
+" N.B. has horrible effects on failure as of 02Jan2020
+" Plug 'dense-analysis/ale'
+
+" Typescript checks
+Plug 'Quramy/tsuquyomi'
 
 " Use `:Hindent`
 " Plug 'alx741/vim-hindent'
-Plug 'mpickering/hlint-refactor-vim'
 
-" Auto completions general support
-" Plug 'Shougo/deoplete.nvim'
-" Auto completions for Haskell (leveraging deoplete)
-" Plug 'eagletmt/neco-ghc'
-
-Plug 'owickstrom/neovim-ghci'
-Plug 'neomake/neomake'
-
-" :Gcommit, :Gdiff etc
+" :Gcommit, :Gdiff etc support
 Plug 'tpope/vim-fugitive'
 
 " Status bar at bottom
@@ -54,6 +62,9 @@ Plug 'fsharp/vim-fsharp'
 " i.e. nmap <F8> :TagbarToggle<CR>
 Plug 'majutsushi/tagbar'
 
+" Color scheme making things darker
+Plug 'joshdick/onedark.vim'
+
 call plug#end()
 
 filetype plugin indent on
@@ -83,9 +94,9 @@ if has("spell")
     setlocal nospell
 endif
 
-" Highlight lines longer than 80 chars
-let w:m80=matchadd('ErrorMsg', '\%>80v.\+', -1)
-set textwidth=80
+" Highlight lines longer than 100 chars
+let w:m100=matchadd('ErrorMsg', '\%>100v.\+', -1)
+set textwidth=100
 
 " Highlight trailing space, and tab characters
 set list lcs=tab:>-,trail:.
@@ -150,7 +161,8 @@ set laststatus=2
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
-let g:airline_powerline_fonts=0
+" Powerline fonts look good if you have them
+let g:airline_powerline_fonts=1
 
 " F2 toggles paste mode
 set pastetoggle=<F2>
@@ -239,22 +251,21 @@ tnoremap <Esc> <C-\><C-n>
 
 vnoremap <leader>bb ! brittany<CR>
 
+" For vim-lsp plugin
 " Set LSP startup
 au User lsp_setup call lsp#register_server({
-    \ 'name': 'ghcide',
-    \ 'cmd': {server_info->[expand('~/.cabal/bin/ghcide'), '--lsp']},
+    \ 'name': 'haskell',
+    \ 'cmd': {server_info->[expand('~/.cabal/bin/ghcide'), "--lsp"]},
     \ 'whitelist': ['haskell'],
     \ })
 let g:lsp_log_verbose = 1
 let g:lsp_log_file = expand('~/vim-lsp.log')
-
-nnoremap <F5> :call LanguageClient_contextMenu()<CR>
 map <Leader>lh :LspHover<CR>
 map <Leader>lg :LspDefinition<CR>
+map <Leader>lG <C-w>LspDefinition<C-w>T
 map <Leader>lr :LspRename<CR>
 map <Leader>lF :LspDocumentFormat<CR>
 map <Leader>lf :LspDocumentRangeFormat<CR>
-map <Leader>ls :LspDocumentSymbol<CR>
 map <Leader>ls :LspDocumentSymbol<CR>
 map <Leader>li :LspImplementation<CR>
 map <Leader>ln :LspNextError<CR>
@@ -262,7 +273,52 @@ map <Leader>lpi :LspPeekImplementation<CR>
 map <Leader>lpt :LspPeekTypeDefinition<CR>
 map <Leader>lpd :LspPeekDeclaration<CR>
 map <Leader>lpf :LspPeekDefinition<CR>
-" Like "lsp who uses this"
-map <Leader>lw :LspReferences<CR>
+map <Leader>la :LspCodeAction <CR>
+" " " Like "lsp who uses this"
+" map <Leader>lw :LspReferences<CR>
 
-nmap <leader>lx  <Plug>(coc-fix-current)
+" For  LanguageClient-neovim
+" let g:LanguageClient_loggingFile = '/tmp/LanguageClient.log'
+" let g:LanguageClient_rootMarkers = ['cabal.project']
+" let g:LanguageClient_serverCommands = {
+"      \ 'haskell': ['ghcide', '--lsp'],
+"      \ }
+" \ 'rust': ['rls'],
+
+" nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+" nnoremap <Leader>lh :call LanguageClient#textDocument_hover()<CR>
+" nnoremap <Leader>lg :call LanguageClient#textDocument_definition()<CR>
+" nnoremap <Leader>lr  :call LanguageClient#textDocument_rename()<CR>
+" nnoremap <Leader>lt <C-w>:call LanguageClient#textDocument_definition()<CR><C-w>T
+" nnoremap <Leader>la :call LanguageClient#textDocument_codeAction()<CR><C-w>T
+
+
+" Coc bindings
+" nmap <leader>lx  <Plug>(coc-fix-current)
+" nnoremap <Leader>lh :call <SID>show_documentation()<CR>
+
+" function! s:show_documentation()
+"   if (index(['vim','help'], &filetype) >= 0)
+"     execute 'h '.expand('<cword>')
+"   else
+"     call CocAction('doHover')
+"   endif
+" endfunction
+
+"Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
+"If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
+"(see < http://sunaku.github.io/tmux-24bit-color.html#usage > for more information.)
+if (empty($TMUX))
+  if (has("nvim"))
+    "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
+    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+  endif
+  "For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
+  "Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
+  " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
+  if (has("termguicolors"))
+    set termguicolors
+  endif
+endif
+
+colorscheme onedark
