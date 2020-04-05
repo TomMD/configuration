@@ -5,19 +5,11 @@ Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/vim-lsp'
 Plug 'mattn/vim-lsp-settings'
 
-" LC-neovim does not hover either - can not determine project on v2
+" LC-neovim does not hover well
 " Plug 'autozimu/LanguageClient-neovim' , {
 "     \ 'branch': 'next',
 "     \ 'do': 'bash install.sh',
 "     \ }
-
-" It underlines everything in an ugly manner when language server fails.
-" N.B. this will invoke cabal, ghc, etc.
-" UGH: Causes horrible underlining and interupting message on failure.
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-" Indentation and highlighting
-" Plug 'neovimhaskell/haskell-vim'
 
 " Ale injects linting information such as shellcheck and hlint
 " N.B. This will run cabal/ghc when editing.
@@ -26,9 +18,6 @@ Plug 'mattn/vim-lsp-settings'
 
 " Typescript checks
 Plug 'Quramy/tsuquyomi'
-
-" Use `:Hindent`
-" Plug 'alx741/vim-hindent'
 
 " :Gcommit, :Gdiff etc support
 Plug 'tpope/vim-fugitive'
@@ -64,6 +53,9 @@ Plug 'majutsushi/tagbar'
 
 " Color scheme making things darker
 Plug 'joshdick/onedark.vim'
+
+" Asyc auto complete
+Plug 'Shougo/deoplete.nvim'
 
 call plug#end()
 
@@ -167,14 +159,8 @@ let g:airline_powerline_fonts=1
 " F2 toggles paste mode
 set pastetoggle=<F2>
 
-" Disable haskell-vim omnifunc
-let g:haskellmode_completion_ghc = 0
-" Enable omni completion from necoghc
-autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
-let g:necoghc_enable_detailed_browse = 1
-
+" Use async auto complete automatically
 let g:deoplete#enable_at_startup = 1
-
 
 " Use ctrl-[hjkl] to select the active split.
 nnoremap <silent> <C-k> <C-w>k
@@ -255,7 +241,7 @@ vnoremap <leader>bb ! brittany<CR>
 " Set LSP startup
 au User lsp_setup call lsp#register_server({
     \ 'name': 'haskell',
-    \ 'cmd': {server_info->[expand('~/.cabal/bin/ghcide'), "--lsp"]},
+    \ 'cmd': {server_info->[expand('~/.cabal/bin/haskell-language-server'), "-d", "-l", expand("~/haskell-language-server.log"), "--lsp"]},
     \ 'whitelist': ['haskell'],
     \ })
 let g:lsp_log_verbose = 1
@@ -269,6 +255,7 @@ map <Leader>lf :LspDocumentRangeFormat<CR>
 map <Leader>ls :LspDocumentSymbol<CR>
 map <Leader>li :LspImplementation<CR>
 map <Leader>ln :LspNextError<CR>
+map <Leader>lN :LspPreviousError<CR>
 map <Leader>lpi :LspPeekImplementation<CR>
 map <Leader>lpt :LspPeekTypeDefinition<CR>
 map <Leader>lpd :LspPeekDeclaration<CR>
