@@ -107,7 +107,7 @@ let g:hlint_args = '-i "Redundant bracket"'
 
 " " Automatic section commenting via "--s"
 let s:width = 80
- 
+
 function! HaskellModuleSection(...)
     let name = 0 < a:0 ? a:1 : inputdialog("Section name: ")
 
@@ -150,6 +150,7 @@ nnoremap <C-H> <C-W><C-H>
 
 " Airline config
 set laststatus=2
+let g:airline#extensions#tabline#enabled = 1
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
@@ -238,6 +239,13 @@ tnoremap <Esc> <C-\><C-n>
 vnoremap <leader>bb ! brittany<CR>
 
 " For vim-lsp plugin
+let g:lsp_diagnostics_float_cursor = 1 " float the diagnostics
+let g:lsp_diagnostics_float_delay = 300
+let g:lsp_signs_enabled = 1         " enable signs
+let g:lsp_signs_error = {'text': '✗'}
+let g:lsp_signs_warning = {'text': '‼'} " icons require GUI
+let g:lsp_signs_hint = {'text':'?'} " icons require GUI
+
 " Set LSP startup
 au User lsp_setup call lsp#register_server({
     \ 'name': 'haskell',
