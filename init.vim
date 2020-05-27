@@ -57,6 +57,11 @@ Plug 'joshdick/onedark.vim'
 " Asyc auto complete
 Plug 'Shougo/deoplete.nvim'
 
+" typescript coloring
+Plug 'ianks/vim-tsx'
+" LSP support for typescript (must come after vim-lsp)
+Plug 'ryanolsonx/vim-lsp-typescript'
+
 call plug#end()
 
 filetype plugin indent on
@@ -249,7 +254,7 @@ let g:lsp_signs_hint = {'text':'?'} " icons require GUI
 " Set LSP startup
 au User lsp_setup call lsp#register_server({
     \ 'name': 'haskell',
-    \ 'cmd': {server_info->[expand('~/.cabal/bin/haskell-language-server'), "-d", "-l", expand("~/haskell-language-server.log"), "--lsp"]},
+    \ 'cmd': {server_info->[expand('~/.cabal/bin/haskell-language-server'), "--lsp", "-d", "-l", expand("~/haskell-language-server.log") ]},
     \ 'whitelist': ['haskell'],
     \ })
 let g:lsp_log_verbose = 1

@@ -105,6 +105,13 @@ if [ -f "$HOME/.nix-profile/etc/ssl/certs/ca-bundle.crt" ] ; then
     export SSL_CERT_FILE=~/.nix-profile/etc/ssl/certs/ca-bundle.crt
 fi
 
-if [ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ] ; then
-    source $HOME/.nix-profile/etc/profile.d/nix.sh
-fi
+ if [ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ] ; then
+     source $HOME/.nix-profile/etc/profile.d/nix.sh
+ fi
+
+ export TF_VAR_pgp_key=`gpg --export 'tommd@muse.dev' | base64`
+
+ alias cb="cabal build --builddir=build"
+ alias cr="cabal repl --builddir=build"
+ alias ce="cabal exec --builddir=build"
+ alias ct="cabal test --builddir=build"
