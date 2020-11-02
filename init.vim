@@ -1,20 +1,12 @@
 call plug#begin()
 
-" Intel engine, leveraging LSP
 Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/vim-lsp'
-Plug 'mattn/vim-lsp-settings'
 
-" LC-neovim does not hover well
-" Plug 'autozimu/LanguageClient-neovim' , {
-"     \ 'branch': 'next',
-"     \ 'do': 'bash install.sh',
-"     \ }
-
-" Ale injects linting information such as shellcheck and hlint
-" N.B. This will run cabal/ghc when editing.
-" N.B. has horrible effects on failure as of 02Jan2020
-" Plug 'dense-analysis/ale'
+" An LSP client
+Plug 'autozimu/LanguageClient-neovim' , {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
 
 " Typescript checks
 Plug 'Quramy/tsuquyomi'
@@ -24,8 +16,10 @@ Plug 'tpope/vim-fugitive'
 
 " Status bar at bottom
 Plug 'bling/vim-airline'
+
 " Vim plugin for displaying type annotations of TypeScript programs produced by RefScript
 Plug 'panagosg7/vim-annotations'
+
 " use CTRL+A/X to create increasing sequence of numbers or letters via visual mode
 Plug 'triglav/vim-visual-increment'
 
@@ -59,6 +53,7 @@ Plug 'Shougo/deoplete.nvim'
 
 " typescript coloring
 Plug 'ianks/vim-tsx'
+
 " LSP support for typescript (must come after vim-lsp)
 Plug 'ryanolsonx/vim-lsp-typescript'
 
@@ -175,13 +170,8 @@ nnoremap <silent> <C-h> <C-w>h
 nnoremap <silent> <C-l> <C-w>l
 
 " use '@s' to format haskell import statements
-vnoremap <silent> s :'<,'>sort /import\(\s\+qualified\)\?\s\+/<CR>
+vnoremap <silent>@s :'<,'>sort /import\(\s\+qualified\)\?\s\+/<CR>
 nnoremap Q <nop>
-
-" Liquid haskell type checking
-" nmap <silent> <c-t> :SyntasticCheck liquid<CR>
-" let g:syntastic_haskell_checkers = []
-" let g:vim_annotations_offset = '/.liquid/'
 
 " Make '%' and company handle nested parens
 autocmd FileType haskell set cpoptions+=M
@@ -192,118 +182,27 @@ let @i="0elcw           \<ESC>$byawA (\<ESC>pA)\<ESC>yypellRqualified\<ESC>$xbXi
 " Open tags in new tabs (via C-[)
 nnoremap <silent><C-[> <C-w><C-]><C-w>T
 
-" Background keeps getting messed up by.. what?
-set background=light
-
-" GHCi module options
-augroup ghciMaps
-  au!
-  " Maps for ghci. Restrict to Haskell buffers so the bindings don't collide.
-
-  " Background process and window management
-  au FileType haskell nnoremap <silent> <leader>gs :GhciStart<CR>
-  au FileType haskell nnoremap <silent> <leader>gk :GhciKill<CR>
-
-  " Restarting GHCi might be required if you add new dependencies
-  au FileType haskell nnoremap <silent> <leader>gr :GhciRestart<CR>
-
-  " Open GHCi split horizontally
-  au FileType haskell nnoremap <silent> <leader>go :GhciOpen<CR>
-  " Open GHCi split vertically
-  au FileType haskell nnoremap <silent> <leader>gov :GhciOpen<CR><C-W>H
-  au FileType haskell nnoremap <silent> <leader>gh :GhciHide<CR>
-
-  " Get info
-  au FileType haskell nnoremap <silent> <leader>gi :GhciInfo<CR>
-
-  " Automatically reload on save
-  " au BufWritePost *.hs GhciReload
-  " Manually save and reload
-  au FileType haskell nnoremap <silent> <leader>wr :w \| :GhciReload<CR>
-
-  " Load individual modules
-  au FileType haskell nnoremap <silent> <leader>gl :GhciLoadCurrentModule<CR>
-  au FileType haskell nnoremap <silent> <leader>gf :GhciLoadCurrentFile<CR>
-augroup END
-
-" Prevent GHCi from starting automatically
-let g:ghci_start_immediately = 0
-
-" Customize how to run GHCi
-let g:ghci_command = 'cabal new-repl'
-let g:ghci_command_line_options = '-fobject-code'
-" Bug in ghci wrt how it thinks ghci is started/not loaded
-let g:ghci_started = 0
-
 " Tagbar
 nmap <F8> :TagbarToggle<CR>
 
 " Use Esc to exit terminal mode.
 tnoremap <Esc> <C-\><C-n>
 
-vnoremap <leader>bb ! brittany<CR>
-
-" For vim-lsp plugin
-let g:lsp_diagnostics_float_cursor = 1 " float the diagnostics
-let g:lsp_diagnostics_float_delay = 300
-let g:lsp_signs_enabled = 1         " enable signs
-let g:lsp_signs_error = {'text': '✗'}
-let g:lsp_signs_warning = {'text': '‼'} " icons require GUI
-let g:lsp_signs_hint = {'text':'?'} " icons require GUI
-
-" Set LSP startup
-au User lsp_setup call lsp#register_server({
-    \ 'name': 'haskell',
-    \ 'cmd': {server_info->[expand('~/.cabal/bin/haskell-language-server'), "--lsp", "-d", "-l", expand("~/haskell-language-server.log") ]},
-    \ 'whitelist': ['haskell'],
-    \ })
-let g:lsp_log_verbose = 1
-let g:lsp_log_file = expand('~/vim-lsp.log')
-map <Leader>lh :LspHover<CR>
-map <Leader>lg :LspDefinition<CR>
-map <Leader>lG <C-w>LspDefinition<C-w>T
-map <Leader>lr :LspRename<CR>
-map <Leader>lF :LspDocumentFormat<CR>
-map <Leader>lf :LspDocumentRangeFormat<CR>
-map <Leader>ls :LspDocumentSymbol<CR>
-map <Leader>li :LspImplementation<CR>
-map <Leader>ln :LspNextError<CR>
-map <Leader>lN :LspPreviousError<CR>
-map <Leader>lpi :LspPeekImplementation<CR>
-map <Leader>lpt :LspPeekTypeDefinition<CR>
-map <Leader>lpd :LspPeekDeclaration<CR>
-map <Leader>lpf :LspPeekDefinition<CR>
-map <Leader>la :LspCodeAction <CR>
-" " " Like "lsp who uses this"
-" map <Leader>lw :LspReferences<CR>
-
 " For  LanguageClient-neovim
-" let g:LanguageClient_loggingFile = '/tmp/LanguageClient.log'
-" let g:LanguageClient_rootMarkers = ['cabal.project']
-" let g:LanguageClient_serverCommands = {
-"      \ 'haskell': ['ghcide', '--lsp'],
-"      \ }
-" \ 'rust': ['rls'],
+let g:LanguageClient_loggingFile = '/tmp/LanguageClient.log'
+let g:LanguageClient_rootMarkers = ['cabal.project']
+let g:LanguageClient_serverCommands = {
+     \ 'haskell': ['haskell-language-server-wrapper', '--lsp'],
+     \ }
+let g:LanguageClient_settingsPath = expand("~/.config/nvim/settings.json")
 
-" nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-" nnoremap <Leader>lh :call LanguageClient#textDocument_hover()<CR>
-" nnoremap <Leader>lg :call LanguageClient#textDocument_definition()<CR>
-" nnoremap <Leader>lr  :call LanguageClient#textDocument_rename()<CR>
-" nnoremap <Leader>lt <C-w>:call LanguageClient#textDocument_definition()<CR><C-w>T
-" nnoremap <Leader>la :call LanguageClient#textDocument_codeAction()<CR><C-w>T
-
-
-" Coc bindings
-" nmap <leader>lx  <Plug>(coc-fix-current)
-" nnoremap <Leader>lh :call <SID>show_documentation()<CR>
-
-" function! s:show_documentation()
-"   if (index(['vim','help'], &filetype) >= 0)
-"     execute 'h '.expand('<cword>')
-"   else
-"     call CocAction('doHover')
-"   endif
-" endfunction
+nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+nnoremap <Leader>lh :call LanguageClient#textDocument_hover()<CR>
+nnoremap <Leader>lg :call LanguageClient#textDocument_definition()<CR>
+nnoremap <Leader>lr  :call LanguageClient#textDocument_rename()<CR>
+nnoremap <Leader>lt <C-w>:call LanguageClient#textDocument_definition()<CR><C-w>T
+nnoremap <Leader>la :call LanguageClient#textDocument_codeAction()<CR><C-w>T
+nnoremap <Leader>lf :call LanguageClient#textDocument_formatting()<CR>
 
 "Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
 "If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
