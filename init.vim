@@ -3,10 +3,13 @@ call plug#begin()
 Plug 'prabirshrestha/async.vim'
 
 " An LSP client
-Plug 'autozimu/LanguageClient-neovim' , {
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh',
-    \ }
+Plug 'prabirshrestha/vim-lsp'
+" Plug 'mattn/vim-lsp-settings'
+
+"Plug 'autozimu/LanguageClient-neovim', {
+"    \ 'branch': 'next',
+"    \ 'do': 'bash install.sh',
+"    \ }
 
 " Typescript checks
 Plug 'Quramy/tsuquyomi'
@@ -189,20 +192,65 @@ nmap <F8> :TagbarToggle<CR>
 tnoremap <Esc> <C-\><C-n>
 
 " For  LanguageClient-neovim
-let g:LanguageClient_loggingFile = '/tmp/LanguageClient.log'
-let g:LanguageClient_rootMarkers = ['cabal.project']
-let g:LanguageClient_serverCommands = {
-     \ 'haskell': ['haskell-language-server-wrapper', '--lsp'],
-     \ }
-let g:LanguageClient_settingsPath = expand("~/.config/nvim/settings.json")
+" let g:LanguageClient_loggingFile = '/tmp/LanguageClient.log'
+" let g:LanguageClient_loggingLevel=  'warn'
+" let g:LanguageClient_rootMarkers = ['cabal.project']
+" let g:LanguageClient_waitOutputTimeout = 3600
+" set rtp+=~/.config/nvim/plugged/LanguageClient-neovim
+" let g:LanguageClient_serverCommands = {
+"      \ 'haskell': ['haskell-language-server-wrapper', '--lsp'],
+"      \ }
+" let g:LanguageClient_settingsPath = expand("~/.config/nvim/settings.json")
+" 
+" nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+" nnoremap <Leader>lh :call LanguageClient#textDocument_hover()<CR>
+" nnoremap <Leader>lg :call LanguageClient#textDocument_definition()<CR>
+" nnoremap <Leader>lr  :call LanguageClient#textDocument_rename()<CR>
+" nnoremap <Leader>lt <C-w>:call LanguageClient#textDocument_definition()<CR><C-w>T
+" nnoremap <Leader>la :call LanguageClient#textDocument_codeAction()<CR><C-w>T
+" nnoremap <Leader>lf :call LanguageClient#textDocument_formatting()<CR>
+" For vim-lsp:
+if executable('haskell-language-server-wrapper')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'haskell-language-server',
+        \ 'cmd': {server_info->['haskell-language-server-8.10.1', '--lsp']},
+        \ 'allowlist': ['haskell'],
+        \ 'config' : { 'languageServerHaskell' : { 'formattingProvider' : 'fourmolu' , 'formattingOptions' : { 'tabSize' : 4 } } },
+        \ 'workspace_config' : { 'languageServerHaskell' : { 'formattingProvider' : 'fourmolu' , 'formattingOptions' : { 'tabSize' : 4, 'respectful' : 'false' }}},
+        \ })
+endif
 
-nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-nnoremap <Leader>lh :call LanguageClient#textDocument_hover()<CR>
-nnoremap <Leader>lg :call LanguageClient#textDocument_definition()<CR>
-nnoremap <Leader>lr  :call LanguageClient#textDocument_rename()<CR>
-nnoremap <Leader>lt <C-w>:call LanguageClient#textDocument_definition()<CR><C-w>T
-nnoremap <Leader>la :call LanguageClient#textDocument_codeAction()<CR><C-w>T
-nnoremap <Leader>lf :call LanguageClient#textDocument_formatting()<CR>
+function! s:on_lsp_buffer_enabled() abort
+    setlocal omnifunc=lsp#complete
+    setlocal signcolumn=yes
+    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+    nmap <buffer> gD <plug>(lsp-definition)
+    nmap <buffer> gs <plug>(lsp-document-symbol-search)
+    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+    nmap <buffer> gr <plug>(lsp-references)
+    nmap <buffer> gi <plug>(lsp-implementation)
+    nmap <buffer> gt <plug>(lsp-type-definition)
+    nmap <buffer> <leader>rn <plug>(lsp-rename)
+    nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
+    nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
+    nmap <buffer> K <plug>(lsp-hover)
+    nmap <buffer> F <plug>(lsp-document-format)
+    nmap <buffer> J <plug>(lsp-code-action)
+
+    let g:lsp_format_sync_timeout = 1000
+    autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
+
+    " refer to doc to add more commands
+endfunction
+let g:lsp_log_verbose = 1
+let g:lsp_log_file = '/tmp/vim-lsp.log'
+let g:lsp_settings = { 'haskell' : { 'formattingProvider' : 'fourmolu' , 'formattingOptions' : { 'tabSize' : 4 }} }
+
+augroup lsp_install
+    au!
+    " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
 
 "Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
 "If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
