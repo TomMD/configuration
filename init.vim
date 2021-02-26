@@ -235,7 +235,7 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
     nmap <buffer> K <plug>(lsp-hover)
     nmap <buffer> F <plug>(lsp-document-format)
-    nmap <buffer> J <plug>(lsp-code-action)
+    nmap <buffer> U <plug>(lsp-code-action)
 
     let g:lsp_format_sync_timeout = 1000
     autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
@@ -269,3 +269,5 @@ if (empty($TMUX))
 endif
 
 colorscheme onedark
+nnoremap <C-n> :tabnext<Enter>
+nnoremap <C-m> :tabprev<Enter>
