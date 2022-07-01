@@ -4,8 +4,8 @@
 [[ ! ( -f "$HOME/.tmux.conf" ) ]] && ln -fs `pwd`/tmux.conf $HOME/.tmux.conf
 [[ ! ( -f "$HOME/.vimrc" ) ]] && ln -fs `pwd`/vimrc $HOME/.vimrc
 mkdir -p ~/.config/nvim
-[[ ! ( -f "$HOME/.config/nvim/init.vim" ) ]] && ln -fs `pwd`/init.vim $HOME/.config/nvim
-[[ ! ( -f "$HOME/.config/nvim/settings.json" ) ]] && ln -fs `pwd`/settings.json $HOME/.config/nvim
+# [[ ! ( -f "$HOME/.config/nvim/init.vim" ) ]] && ln -fs `pwd`/init.vim $HOME/.config/nvim
+[[ ! ( -f "$HOME/.config/nvim/init.lua" ) ]] && ln -fs `pwd`/init.lua $HOME/.config/nvim
 
 if [[ -x "$(command -v nvim)" ]] ; then
     if [[ ! ( -x $(command -v pip) )  ]] ; then
@@ -41,6 +41,6 @@ fi
 
 if [[ -x "$(command -v git)" ]] ; then
     git config --global push.default simple
-    git config --global user.email "tommd@muse.dev"
+    git config --global user.email "thomas.dubuisson@gmail.com"
     git config --global user.name "Thomas M. DuBuisson"
 fi
