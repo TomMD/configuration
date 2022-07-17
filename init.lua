@@ -66,6 +66,13 @@ Plug 'ianks/vim-tsx'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'folke/trouble.nvim'
 
+Plug 'williamboman/nvim-lsp-installer'
+Plug 'mfussenegger/nvim-jdtls'
+Plug 'georgewfraser/java-language-server'
+
+-- Treesitter
+Plug 'nvim-treesitter/nvim-treesitter'
+
 vim.call('plug#end')
 vim.lsp.set_log_level("info")
 
@@ -89,7 +96,8 @@ vim.opt.smarttab = true
 vim.opt.shiftround = true
 
 -- Ignore build functions
-vim.g.ctrlp_custom_ignore = [[node_modules|DS_Store|git|build*|dist*|.git]]
+-- vim.g.ctrlp_custom_ignore = [[node_modules|DS_Store|git|build*|dist*|.git]]
+vim.g.ctrlp_user_command = 'git -C %s ls-files'
 
 vim.keymap.set('i', 'jk', '<Esc>')
 vim.keymap.set('i', '<C-J>', '<C-W><C-J>')
@@ -161,3 +169,4 @@ require('lspconfig')["hls"].setup{
       }
   }
 }
+require'lspconfig'.java_language_server.setup{}
