@@ -11,6 +11,8 @@ Plug 'prabirshrestha/async.vim'
 -- Plug 'mattn/vim-lsp-settings'
 Plug 'neovim/nvim-lspconfig'
 
+Plug 'udalov/kotlin-vim'
+
 -- Plug 'autozimu/LanguageClient-neovim', {
 --     \ 'branch': 'next',
 --     \ 'do': 'bash install.sh',
@@ -156,7 +158,7 @@ local on_attach = function(client, bufnr)
   vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
   vim.keymap.set('n', '<space>a', vim.lsp.buf.code_action, bufopts)
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-  vim.keymap.set('n', '<Space>f', vim.lsp.buf.formatting, bufopts)
+  vim.keymap.set('n', '<space>f', vim.lsp.buf.formatting, bufopts)
 end
 
 -- LSP Stuff
@@ -169,4 +171,9 @@ require('lspconfig')["hls"].setup{
       }
   }
 }
-require'lspconfig'.java_language_server.setup{}
+require('lspconfig').java_language_server.setup{
+    on_attach = on_attach
+}
+require('lspconfig').kotlin_language_server.setup{
+    on_attach = on_attach
+}

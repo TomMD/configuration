@@ -55,7 +55,7 @@ export LC_NUMERIC="en_US.UTF-8"
 export LC_TIME="en_US.UTF-8"
 export LC_ALL=
 export PROMPT='%n@%m %2~%% '
-export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH:$HOME/Library/Python/2.7/bin:/usr/local/sbin:$HOME/.cabal/bin
+export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH:$HOME/Library/Python/2.7/bin:/usr/local/sbin:$HOME/.cabal/bin:$HOME/.local/bin/kotlin-language-server/bin
 export REPORTTIME=1
 alias vi=nvim
 bindkey '^R' history-incremental-search-backward
@@ -71,7 +71,7 @@ if [ -f "${HOME}/.gpg-agent-info" ]; then
 fi
 
 # Nix, ghcup
-export PATH=$HOME/.ghcup/bin:$PATH:$HOME/.nix-profile/bin
+export PATH=$HOME/.ghcup/bin:$PATH:$HOME/.nix-profile/bin:$HOME/.local/bin/nvim/bin
 export EDITOR=nvim
 
 if [ -e "$HOME/.zshrc_private_stuff" ]; then
