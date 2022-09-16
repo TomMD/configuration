@@ -4,8 +4,9 @@
 [[ ! ( -f "$HOME/.tmux.conf" ) ]] && ln -fs `pwd`/tmux.conf $HOME/.tmux.conf
 [[ ! ( -f "$HOME/.vimrc" ) ]] && ln -fs `pwd`/vimrc $HOME/.vimrc
 mkdir -p ~/.config/nvim
-# [[ ! ( -f "$HOME/.config/nvim/init.vim" ) ]] && ln -fs `pwd`/init.vim $HOME/.config/nvim
 [[ ! ( -f "$HOME/.config/nvim/init.lua" ) ]] && ln -fs `pwd`/init.lua $HOME/.config/nvim
+[[ ( -f "$HOME/.config/nvim" ) && ! (-f "$HOME/.config/autoload" ) ]] && mkdir $HOME/.config/nvim/autoload 
+[[ ! ( -e "$HOME/.config/nvim/autoload/plug.vim" ) ]] &&  curl https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim -o $HOME/.config/nvim/autoload
 
 if [[ -x "$(command -v nvim)" ]] ; then
     if [[ ! ( -x $(command -v pip) )  ]] ; then
