@@ -6,17 +6,16 @@ Plug 'xavierchow/vim-swagger-preview'
 
 Plug 'prabirshrestha/async.vim'
 
+-- A framework for interacting with tests within NeoVim.
+-- value unknown
+Plug 'nvim-lua/plenary.nvim'
+Plug 'antoinemadec/FixCursorHold.nvim'
+Plug 'nvim-neotest/neotest'
+
 -- An LSP client
--- Plug 'prabirshrestha/vim-lsp'
--- Plug 'mattn/vim-lsp-settings'
 Plug 'neovim/nvim-lspconfig'
 
 Plug 'udalov/kotlin-vim'
-
--- Plug 'autozimu/LanguageClient-neovim', {
---     \ 'branch': 'next',
---     \ 'do': 'bash install.sh',
---     \ }
 
 --  Typescript checks
 Plug 'Quramy/tsuquyomi'
@@ -61,6 +60,16 @@ Plug 'joshdick/onedark.vim'
 --  Asyc auto complete
 Plug 'Shougo/deoplete.nvim'
 
+-- Autocompletion framework
+-- Value unknown
+Plug("hrsh7th/nvim-cmp")
+Plug( "hrsh7th/cmp-nvim-lsp")
+    -- cmp Snippet completion
+Plug("hrsh7th/cmp-vsnip")
+    -- cmp Path completion
+Plug("hrsh7th/cmp-path")
+Plug("hrsh7th/cmp-buffer")
+
 --  typescript coloring
 Plug 'ianks/vim-tsx'
 
@@ -74,6 +83,10 @@ Plug 'georgewfraser/java-language-server'
 
 -- Treesitter
 Plug 'nvim-treesitter/nvim-treesitter'
+
+-- Fuzzy find over files and contents
+-- Plug 'nvim-lua/plenary.nvim'
+-- Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
 
 vim.call('plug#end')
 vim.lsp.set_log_level("info")
