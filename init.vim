@@ -1,3 +1,4 @@
+" see init.lua. Do not use
 call plug#begin()
 
 Plug 'prabirshrestha/async.vim'
