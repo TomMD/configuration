@@ -6,6 +6,9 @@ Plug 'xavierchow/vim-swagger-preview'
 
 Plug 'prabirshrestha/async.vim'
 
+-- Nix syntax highlighting
+Plug 'LnL7/vim-nix'
+
 -- A framework for interacting with tests within NeoVim.
 -- value unknown
 Plug 'nvim-lua/plenary.nvim'
@@ -16,6 +19,13 @@ Plug 'nvim-neotest/neotest'
 Plug 'neovim/nvim-lspconfig'
 
 Plug 'udalov/kotlin-vim'
+
+-- An Rust LSP autoconfig system
+Plug 'simrat39/rust-tools.nvim'
+
+-- Debugging for rust-tools (?)
+-- Plug 'nvim-lua/plenary.nvim'
+-- Plug 'mfussenegger/nvim-dap'
 
 --  Typescript checks
 Plug 'Quramy/tsuquyomi'
@@ -58,7 +68,7 @@ Plug 'majutsushi/tagbar'
 Plug 'joshdick/onedark.vim'
 
 --  Asyc auto complete
-Plug 'Shougo/deoplete.nvim'
+-- Plug 'Shougo/deoplete.nvim'
 
 -- Autocompletion framework
 -- Value unknown
@@ -88,6 +98,8 @@ Plug 'nvim-treesitter/nvim-treesitter'
 -- Plug 'nvim-lua/plenary.nvim'
 -- Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
 
+Plug 'github/copilot.vim'
+
 vim.call('plug#end')
 vim.lsp.set_log_level("info")
 
@@ -105,8 +117,8 @@ vim.opt.smartcase = true
 vim.keymap.set('n', '<Leader><Leader>', ':noh<Enter>')
 vim.opt.ruler = true
 vim.opt_local.spelllang = 'en_us'
-vim.opt.expandtab = true
-vim.opt.shiftwidth = 4
+-- vim.opt.expandtab = true
+-- vim.opt.shiftwidth = 4
 vim.opt.smarttab = true
 vim.opt.shiftround = true
 
@@ -122,9 +134,6 @@ vim.keymap.set('i', '<C-H>', '<C-W><C-H>')
 
 -- Airline
 vim.g.airline_powerline_fonts = true
-
--- F2 toggles paste mode
-vim.opt.pastetoggle = '<F2>'
 
 -- Active split with C-{kjhl}
 vim.keymap.set('n', '<C-k>', '<C-w>k')
@@ -159,9 +168,10 @@ local on_attach = function(client, bufnr)
   local bufopts = { noremap=true, silent=true, buffer=bufnr }
   vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
   vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
+  vim.keymap.set('n', 'gc', vim.lsp.buf.incoming_calls)
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
   vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
-  vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
+  vim.keymap.set('n', '<C-s>', vim.lsp.buf.signature_help, bufopts)
   vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
   vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
   vim.keymap.set('n', '<space>wl', function()
@@ -171,10 +181,10 @@ local on_attach = function(client, bufnr)
   vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
   vim.keymap.set('n', '<space>a', vim.lsp.buf.code_action, bufopts)
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-  vim.keymap.set('n', '<space>f', vim.lsp.buf.formatting, bufopts)
 end
 
 -- LSP Stuff
+require("nvim-lsp-installer").setup {}
 require('lspconfig')["hls"].setup{
     on_attach = on_attach,
     flags = lsp_flags,
@@ -190,3 +200,83 @@ require('lspconfig').java_language_server.setup{
 require('lspconfig').kotlin_language_server.setup{
     on_attach = on_attach
 }
+require('lspconfig').gopls.setup{
+    cmd = {"gopls", "serve"},
+    filetypes = {"go", "gomod"},
+    root_dir = require('lspconfig/util').root_pattern("go.work", "go.mod", ".git"),
+    settings = {
+      gopls = {
+        analyses = {
+          unusedparams = true,
+        },
+        staticcheck = true,
+      },
+    },
+    on_attach = on_attach
+}
+
+local opts = {
+    tools = {
+        inlay_hints = {
+            only_current_line = true,
+        }
+    },
+    server = {
+        on_attach = on_attach,
+    }
+}
+
+local rt = require("rust-tools").setup(opts)
+-- rt.setup({
+--   server = {
+--     on_attach = on_attach
+--   },
+-- })
+
+-- Set completeopt to have a better completion experience
+-- :help completeopt
+-- menuone: popup even when there's only one match
+-- noinsert: Do not insert text until a selection is made
+-- noselect: Do not auto-select, nvim-cmp plugin will handle this for us.
+vim.o.completeopt = "menuone,noinsert,noselect"
+
+-- Avoid showing extra messages when using completion
+vim.opt.shortmess = vim.opt.shortmess + "c"
+
+-- Setup Completion
+-- See https://github.com/hrsh7th/nvim-cmp#basic-configuration
+local cmp = require("cmp")
+cmp.setup({
+  preselect = cmp.PreselectMode.None,
+  snippet = {
+    expand = function(args)
+      vim.fn["vsnip#anonymous"](args.body)
+    end,
+  },
+  mapping = {
+    ["<C-p>"] = cmp.mapping.select_prev_item(),
+    ["<C-n>"] = cmp.mapping.select_next_item(),
+    -- Add tab support
+    ["<S-Tab>"] = cmp.mapping.select_prev_item(),
+    ["<Tab>"] = cmp.mapping.select_next_item(),
+    ["<C-d>"] = cmp.mapping.scroll_docs(-4),
+    ["<C-f>"] = cmp.mapping.scroll_docs(4),
+    ["<C-Space>"] = cmp.mapping.complete(),
+    ["<C-e>"] = cmp.mapping.close(),
+    ["<CR>"] = cmp.mapping.confirm({
+      behavior = cmp.ConfirmBehavior.Insert,
+      select = true,
+    }),
+  },
+
+  -- Installed sources
+  sources = {
+    { name = "nvim_lsp" },
+    { name = "vsnip" },
+    { name = "path" },
+    { name = "buffer" },
+  },
+})
+
+-- Copilot keys
+vim.keymap.set('v', '<space>c', 'copilot#Accept("\\<CR>")', { expr = true })
