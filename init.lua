@@ -2,8 +2,6 @@ local Plug = vim.fn['plug#']
 
 vim.call('plug#begin', '~/.config/nvim/plugged')
 
-Plug 'xavierchow/vim-swagger-preview'
-
 Plug 'prabirshrestha/async.vim'
 
 -- Nix syntax highlighting
@@ -100,8 +98,49 @@ Plug 'nvim-treesitter/nvim-treesitter'
 
 Plug 'github/copilot.vim'
 
+-- MCP as in for AI
+-- Plug 'ravitemer/mcphub.nvim'
+Plug 'coder/claudecode.nvim'
+
 vim.call('plug#end')
 vim.lsp.set_log_level("info")
+
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
+require("claudecode").setup({
+  -- Example of advanced configuration options (uncomment and modify as needed):
+  -- terminal_cmd = nil, -- Custom terminal command (default: "claude")
+  log_level = "info", -- "trace", "debug", "info", "warn", "error"
+  -- terminal = {
+  --   split_side = "right",
+  --   split_width_percentage = 0.30,
+  -- },
+  -- diff_opts = {
+  --   auto_close_on_accept = true,
+  -- },
+})
+
+-- Keymaps for claudecode.nvim
+-- Use vim.keymap.set for modern Neovim keybinding setup
+vim.keymap.set("n", "<leader>a", "<nop>", { desc = "AI/Claude Code", noremap = true, silent = true })
+vim.keymap.set("n", "<leader>ac", "<cmd>ClaudeCode<cr>", { desc = "Toggle Claude" })
+vim.keymap.set("n", "<leader>af", "<cmd>ClaudeCodeFocus<cr>", { desc = "Focus Claude" })
+vim.keymap.set("n", "<leader>ar", "<cmd>ClaudeCode --resume<cr>", { desc = "Resume Claude" })
+vim.keymap.set("n", "<leader>aC", "<cmd>ClaudeCode --continue<cr>", { desc = "Continue Claude" })
+vim.keymap.set("n", "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", { desc = "Add current buffer" })
+vim.keymap.set("v", "<leader>as", "<cmd>ClaudeCodeSend<cr>", { desc = "Send to Claude" })
+
+-- Conditional keymap for file tree plugins (NvimTree, Neo-tree, Oil)
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "NvimTree", "neo-tree", "oil" },
+  callback = function()
+    vim.keymap.set("n", "<leader>as", "<cmd>ClaudeCodeTreeAdd<cr>", { desc = "Add file" })
+  end,
+})
+
+-- Diff management keymaps
+vim.keymap.set("n", "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", { desc = "Accept diff" })
+vim.keymap.set("n", "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", { desc = "Deny diff" })
 
 -- nnoremap <C-n> :tabnext<Enter>
 vim.keymap.set('n', '<C-n>', ':tabnext<Enter>')
@@ -114,7 +153,7 @@ vim.opt.hlsearch = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
-vim.keymap.set('n', '<Leader><Leader>', ':noh<Enter>')
+vim.keymap.set('n', '<Leader><Leader><Leader>', ':noh<Enter>')
 vim.opt.ruler = true
 vim.opt_local.spelllang = 'en_us'
 -- vim.opt.expandtab = true
@@ -126,11 +165,15 @@ vim.opt.shiftround = true
 -- vim.g.ctrlp_custom_ignore = [[node_modules|DS_Store|git|build*|dist*|.git]]
 vim.g.ctrlp_user_command = 'git -C %s ls-files'
 
+-- Typical movement such as jk to escape and ctrl {hjkl} to move around
 vim.keymap.set('i', 'jk', '<Esc>')
 vim.keymap.set('i', '<C-J>', '<C-W><C-J>')
 vim.keymap.set('i', '<C-K>', '<C-W><C-K>')
 vim.keymap.set('i', '<C-L>', '<C-W><C-L>')
 vim.keymap.set('i', '<C-H>', '<C-W><C-H>')
+-- For claudecode you can c-\ c-n then c-h to get to the edit pane, but easier to
+-- use this for `jk` then c-h.
+vim.keymap.set("t", "jk", "<C-\\><C-n>", { noremap = true, silent = true, desc = "Exit Terminal Mode" })
 
 -- Airline
 vim.g.airline_powerline_fonts = true
@@ -165,6 +208,10 @@ local on_attach = function(client, bufnr)
 
   -- Mappings.
   -- See `:help vim.lsp.*` for documentation on any of the below functions
+
+  -- Get the definition location of a symbol you type in
+  vim.keymap.set('n', '<space>ws', '<cmd>lua vim.lsp.buf.workspace_symbol()<CR>', { desc = 'Workspace Symbols' })
+
   local bufopts = { noremap=true, silent=true, buffer=bufnr }
   vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
   vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
