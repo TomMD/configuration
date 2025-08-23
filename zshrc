@@ -69,7 +69,7 @@ if [ -f "${HOME}/.gpg-agent-info" ]; then
   export SSH_AUTH_SOCK
 fi
 
-export PATH=$PATH:$HOME/.nix-profile/bin:$HOME/.local/bin/nvim/bin
+export PATH=$HOME/.nix-profile/bin:$PATH:$HOME/.local/bin/nvim/bin
 export EDITOR=nvim
 
 if [ -e "$HOME/.zshrc_private_stuff" ]; then
@@ -89,8 +89,10 @@ if [ -f "$HOME/.nix-profile/etc/ssl/certs/ca-bundle.crt" ] ; then
     export SSL_CERT_FILE=~/.nix-profile/etc/ssl/certs/ca-bundle.crt
 fi
 
- if [ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ] ; then
-     source $HOME/.nix-profile/etc/profile.d/nix.sh
- fi
+if [ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ] ; then
+    source $HOME/.nix-profile/etc/profile.d/nix.sh
+fi
 
- alias gb="git branch | grep '*'"
+alias gb="git branch | grep '*'"
+
+alias rgg="rg --iglob '!*test*' --iglob '!*mock*' --iglob '!*fake*'"
