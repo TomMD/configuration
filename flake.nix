@@ -54,7 +54,7 @@
               ripgrep
               tmux
               vault
-              # Additional packages for Neovim plugins
+              # Additional packages for Neovim plugins, incl Rust, Go, Haskell
               nodejs
               python3
               cargo
@@ -62,6 +62,14 @@
               go
               gopls
               haskell-language-server
+              home-manager
+              
+              # Language servers for LSP
+              lua-language-server
+              nil # Nix language server
+              typescript-language-server
+              kotlin-language-server
+              nixpkgs-fmt # Nix formatter
             ];
 
             # Enable Home Manager to manage itself
@@ -300,6 +308,7 @@
                 end
 
                 -- LSP configurations
+                local lspconfig = require('lspconfig')
 
                 -- Haskell
                 require('lspconfig').hls.setup{
@@ -344,6 +353,44 @@
                         on_attach = on_attach,
                     }
                 })
+
+                -- Nix
+                lspconfig.nil_ls.setup{
+                    on_attach = on_attach,
+                    settings = {
+                      ['nil'] = {
+                        formatting = {
+                          command = { "nixpkgs-fmt" },
+                        },
+                      },
+                    },
+                }
+
+                -- Lua (for Neovim config)
+                lspconfig.lua_ls.setup{
+                    on_attach = on_attach,
+                    settings = {
+                      Lua = {
+                        runtime = {
+                          version = 'LuaJIT',
+                        },
+                        diagnostics = {
+                          globals = {'vim'},
+                        },
+                        workspace = {
+                          library = vim.api.nvim_get_runtime_file("", true),
+                        },
+                        telemetry = {
+                          enable = false,
+                        },
+                      },
+                    },
+                }
+
+                -- TypeScript/JavaScript
+                lspconfig.tsserver.setup{
+                    on_attach = on_attach,
+                }
 
                 -- Completion setup
                 vim.o.completeopt = "menuone,noinsert,noselect"
