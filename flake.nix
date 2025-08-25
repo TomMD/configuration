@@ -59,6 +59,7 @@
               python3
               cargo
               rustc
+              rust-analyzer # Rust LSP server
               go
               gopls
               haskell-language-server
@@ -70,6 +71,9 @@
               typescript-language-server
               kotlin-language-server
               nixpkgs-fmt # Nix formatter
+
+	      # blockchain things
+	      solana-cli
             ];
 
             # Enable Home Manager to manage itself
@@ -130,23 +134,33 @@
             # Tmux configuration
             programs.tmux = {
               enable = true;
+              prefix = "C-j";
               terminal = "screen-256color";
               keyMode = "vi";
               extraConfig = ''
-                set -g mouse on
-                set -g history-limit 10000
+                set-option -g default-shell /bin/zsh
+                unbind-key C-b
+                bind-key C-j send-prefix
                 
-                # Split panes using | and -
-                bind | split-window -h
-                bind - split-window -v
-                unbind '"'
-                unbind %
+                bind-key -n C-M-u resize-pane -U 1
+                bind-key -n C-M-d resize-pane -D 1
+                bind-key -n C-M-l resize-pane -L 1
+                bind-key -n C-M-r resize-pane -R 1
+                bind '"' split-window -c "#{pane_current_path}"
+                bind '%' split-window -h -c "#{pane_current_path}"
+                bind 'k' respawn-pane -k
+                set-window-option -g mode-keys vi
+                set -g visual-bell on
                 
-                # Switch panes using Alt-arrow without prefix
-                bind -n M-Left select-pane -L
-                bind -n M-Right select-pane -R
-                bind -n M-Up select-pane -U
-                bind -n M-Down select-pane -D
+                unbind P
+                bind P paste-buffer
+                bind-key -T copy-mode-vi v send-keys -X begin-selection
+                bind-key -T copy-mode-vi y send-keys -X copy-selection
+                bind-key -T copy-mode-vi r send-keys -X rectangle-toggle
+                
+                # Options suggested by nvim
+                set -sg escape-time 0
+                set -g default-terminal "screen-256color"
               '';
             };
 
