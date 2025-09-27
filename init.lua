@@ -9,8 +9,6 @@ Plug 'prabirshrestha/async.vim'
 -- LSP and language support
 Plug 'neovim/nvim-lspconfig'
 Plug 'mason-org/mason.nvim'
--- Deprecated Plug 'williamboman/nvim-lsp-installer'
--- Plug 'simrat39/rust-tools.nvim'
 Plug 'mfussenegger/nvim-jdtls'
 Plug 'georgewfraser/java-language-server'
 
@@ -168,7 +166,7 @@ end
 require("mason").setup {}
 
 -- Haskell
-require('lspconfig').hls.setup{
+vim.lsp.config['hls'] = {
     on_attach = on_attach,
     flags = lsp_flags,
     settings = {
@@ -177,19 +175,22 @@ require('lspconfig').hls.setup{
       }
   }
 }
+vim.lsp.enable('hls')
 
 -- Java
-require('lspconfig').java_language_server.setup{
+vim.lsp.config['java_language_server'] = {
     on_attach = on_attach
 }
+vim.lsp.enable('java_language_server')
 
 -- Kotlin
-require('lspconfig').kotlin_language_server.setup{
+vim.lsp.config['kotlin_langauge_server'] = {
     on_attach = on_attach
 }
+vim.lsp.enable('kotlin_langauge_server')
 
 -- Go
-require('lspconfig').gopls.setup{
+vim.lsp.config['gopls'] = {
     cmd = {"gopls", "serve"},
     filetypes = {"go", "gomod"},
     root_dir = require('lspconfig/util').root_pattern("go.work", "go.mod", ".git"),
@@ -203,18 +204,20 @@ require('lspconfig').gopls.setup{
     },
     on_attach = on_attach
 }
+vim.lsp.enable('gopls')
 
 -- Rust
--- local rt = require("rust-tools").setup({
---     tools = {
---         inlay_hints = {
---             only_current_line = true,
---         }
---     },
---     server = {
---         on_attach = on_attach,
---     }
--- })
+vim.lsp.config['rust-analyzer'] = {
+  settings = {
+    ['rust-analyzer'] = {
+    },
+  },
+  cmd = { 'rust-analyzer' },
+  filetypes = { 'rs', 'rust' },
+  root_markers = { '.git', 'Cargo.toml' },
+  on_attach = on_attach,
+}
+vim.lsp.enable('rust-analyzer')
 
 -- Completion setup
 -- vim.o.completeopt = "menuone,noinsert,noselect"
