@@ -8,8 +8,9 @@ Plug 'prabirshrestha/async.vim'
 
 -- LSP and language support
 Plug 'neovim/nvim-lspconfig'
-Plug 'williamboman/nvim-lsp-installer'
-Plug 'simrat39/rust-tools.nvim'
+Plug 'mason-org/mason.nvim'
+-- Deprecated Plug 'williamboman/nvim-lsp-installer'
+-- Plug 'simrat39/rust-tools.nvim'
 Plug 'mfussenegger/nvim-jdtls'
 Plug 'georgewfraser/java-language-server'
 
@@ -22,11 +23,12 @@ Plug 'fsharp/vim-fsharp'
 Plug 'Quramy/tsuquyomi'
 
 -- Completion framework
-Plug 'hrsh7th/nvim-cmp'
-Plug 'hrsh7th/cmp-nvim-lsp'
-Plug 'hrsh7th/cmp-vsnip'
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-buffer'
+-- Causing all sorts of issues on linux preventing typing every third character
+-- Plug 'hrsh7th/nvim-cmp'
+-- Plug 'hrsh7th/cmp-nvim-lsp'
+-- Plug 'hrsh7th/cmp-vsnip'
+-- Plug 'hrsh7th/cmp-path'
+-- Plug 'hrsh7th/cmp-buffer'
 
 -- Testing
 Plug 'nvim-neotest/neotest'
@@ -34,7 +36,7 @@ Plug 'nvim-neotest/neotest'
 -- UI and navigation
 Plug 'kien/ctrlp.vim'
 Plug 'majutsushi/tagbar'
-Plug 'bling/vim-airline'
+-- Plug 'bling/vim-airline'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'folke/trouble.nvim'
 
@@ -82,7 +84,7 @@ require("claudecode").setup({
   log_level = "info",
 })
 
-vim.g.airline_powerline_fonts = true
+-- vim.g.airline_powerline_fonts = true
 vim.g.ctrlp_user_command = 'git -C %s ls-files'
 
 -- Keymaps
@@ -163,7 +165,7 @@ local on_attach = function(client, bufnr)
 end
 
 -- LSP configurations
-require("nvim-lsp-installer").setup {}
+require("mason").setup {}
 
 -- Haskell
 require('lspconfig').hls.setup{
@@ -203,50 +205,50 @@ require('lspconfig').gopls.setup{
 }
 
 -- Rust
-local rt = require("rust-tools").setup({
-    tools = {
-        inlay_hints = {
-            only_current_line = true,
-        }
-    },
-    server = {
-        on_attach = on_attach,
-    }
-})
+-- local rt = require("rust-tools").setup({
+--     tools = {
+--         inlay_hints = {
+--             only_current_line = true,
+--         }
+--     },
+--     server = {
+--         on_attach = on_attach,
+--     }
+-- })
 
 -- Completion setup
-vim.o.completeopt = "menuone,noinsert,noselect"
-vim.opt.shortmess = vim.opt.shortmess + "c"
-
-local cmp = require("cmp")
-cmp.setup({
-  preselect = cmp.PreselectMode.None,
-  snippet = {
-    expand = function(args)
-      vim.fn["vsnip#anonymous"](args.body)
-    end,
-  },
-  mapping = {
-    ["<C-p>"] = cmp.mapping.select_prev_item(),
-    ["<C-n>"] = cmp.mapping.select_next_item(),
-    ["<S-Tab>"] = cmp.mapping.select_prev_item(),
-    ["<Tab>"] = cmp.mapping.select_next_item(),
-    ["<C-d>"] = cmp.mapping.scroll_docs(-4),
-    ["<C-f>"] = cmp.mapping.scroll_docs(4),
-    ["<C-Space>"] = cmp.mapping.complete(),
-    ["<C-e>"] = cmp.mapping.close(),
-    ["<CR>"] = cmp.mapping.confirm({
-      behavior = cmp.ConfirmBehavior.Insert,
-      select = true,
-    }),
-  },
-  sources = {
-    { name = "nvim_lsp" },
-    { name = "vsnip" },
-    { name = "path" },
-    { name = "buffer" },
-  },
-})
+-- vim.o.completeopt = "menuone,noinsert,noselect"
+-- vim.opt.shortmess = vim.opt.shortmess + "c"
+-- 
+-- local cmp = require("cmp")
+-- cmp.setup({
+--   preselect = cmp.PreselectMode.None,
+--   snippet = {
+--     expand = function(args)
+--       vim.fn["vsnip#anonymous"](args.body)
+--     end,
+--   },
+--   mapping = {
+--     ["<C-p>"] = cmp.mapping.select_prev_item(),
+--     ["<C-n>"] = cmp.mapping.select_next_item(),
+--     ["<S-Tab>"] = cmp.mapping.select_prev_item(),
+--     ["<Tab>"] = cmp.mapping.select_next_item(),
+--     ["<C-d>"] = cmp.mapping.scroll_docs(-4),
+--     ["<C-f>"] = cmp.mapping.scroll_docs(4),
+--     ["<C-Space>"] = cmp.mapping.complete(),
+--     ["<C-e>"] = cmp.mapping.close(),
+--     ["<CR>"] = cmp.mapping.confirm({
+--       behavior = cmp.ConfirmBehavior.Insert,
+--       select = true,
+--     }),
+--   },
+--   sources = {
+--     { name = "nvim_lsp" },
+--     { name = "vsnip" },
+--     { name = "path" },
+--     { name = "buffer" },
+--   },
+-- })
 
 
 -- Copilot keys
