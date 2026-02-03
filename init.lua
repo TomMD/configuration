@@ -190,10 +190,11 @@ vim.lsp.config['kotlin_langauge_server'] = {
 vim.lsp.enable('kotlin_langauge_server')
 
 -- Go
-vim.lsp.config['gopls'] = {
+local lspconfig = require('lspconfig')
+lspconfig.gopls.setup({
     cmd = {"gopls", "serve"},
     filetypes = {"go", "gomod"},
-    root_dir = require('lspconfig/util').root_pattern("go.work", "go.mod", ".git"),
+    root_dir = lspconfig.util.root_pattern("go.work", "go.mod", ".git"),
     settings = {
       gopls = {
         analyses = {
@@ -203,8 +204,7 @@ vim.lsp.config['gopls'] = {
       },
     },
     on_attach = on_attach
-}
-vim.lsp.enable('gopls')
+})
 
 -- Rust
 vim.lsp.config['rust-analyzer'] = {

@@ -57,6 +57,7 @@
               # Additional packages for Neovim plugins, incl Rust, Go, Haskell
               nodejs
               python3
+              python3Packages.pip
               cargo
               rustc
               rust-analyzer # Rust LSP server
@@ -200,7 +201,7 @@
                 
                 # LSP and language support
 		nvim-lspconfig
-                rust-tools-nvim
+                # rust-tools-nvim
                 nvim-jdtls
                 
                 # Language-specific syntax
