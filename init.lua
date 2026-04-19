@@ -139,36 +139,37 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
 
--- LSP on_attach function
-local on_attach = function(client, bufnr)
-  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+-- LSP keybindings via LspAttach autocmd (Neovim 0.11+ recommended pattern)
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(ev)
+    local bufnr = ev.buf
+    local bufopts = { noremap=true, silent=true, buffer=bufnr }
 
-  local bufopts = { noremap=true, silent=true, buffer=bufnr }
-  vim.keymap.set('n', '<space>ws', '<cmd>lua vim.lsp.buf.workspace_symbol()<CR>', { desc = 'Workspace Symbols' })
-  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
-  vim.keymap.set('n', 'gc', vim.lsp.buf.incoming_calls)
-  vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
-  vim.keymap.set('n', '<C-s>', vim.lsp.buf.signature_help, bufopts)
-  vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
-  vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
-  vim.keymap.set('n', '<space>wl', function()
-    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-  end, bufopts)
-  vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
-  vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
-  vim.keymap.set('n', '<space>a', vim.lsp.buf.code_action, bufopts)
-  vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-end
+    vim.keymap.set('n', '<space>ws', vim.lsp.buf.workspace_symbol, { noremap=true, silent=true, buffer=bufnr, desc = 'Workspace Symbols' })
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
+    -- nowait=true prevents conflict with built-in gcc (Toggle comment line)
+    vim.keymap.set('n', 'gc', vim.lsp.buf.incoming_calls, { noremap=true, silent=true, buffer=bufnr, nowait=true })
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
+    vim.keymap.set('n', '<C-s>', vim.lsp.buf.signature_help, bufopts)
+    vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
+    vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
+    vim.keymap.set('n', '<space>wl', function()
+      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end, bufopts)
+    vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
+    vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
+    vim.keymap.set('n', '<space>a', vim.lsp.buf.code_action, bufopts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
+  end,
+})
 
 -- LSP configurations
 require("mason").setup {}
 
 -- Haskell
 vim.lsp.config['hls'] = {
-    on_attach = on_attach,
-    flags = lsp_flags,
     settings = {
        haskell = {
         formattingProvider = "fourmolu"
@@ -178,23 +179,18 @@ vim.lsp.config['hls'] = {
 vim.lsp.enable('hls')
 
 -- Java
-vim.lsp.config['java_language_server'] = {
-    on_attach = on_attach
-}
+vim.lsp.config['java_language_server'] = {}
 vim.lsp.enable('java_language_server')
 
 -- Kotlin
-vim.lsp.config['kotlin_langauge_server'] = {
-    on_attach = on_attach
-}
-vim.lsp.enable('kotlin_langauge_server')
+vim.lsp.config['kotlin_language_server'] = {}
+vim.lsp.enable('kotlin_language_server')
 
 -- Go
-local lspconfig = require('lspconfig')
-lspconfig.gopls.setup({
-    cmd = {"gopls", "serve"},
+vim.lsp.config['gopls'] = {
+    cmd = {"gopls"},
     filetypes = {"go", "gomod"},
-    root_dir = lspconfig.util.root_pattern("go.work", "go.mod", ".git"),
+    root_markers = {"go.work", "go.mod", ".git"},
     settings = {
       gopls = {
         analyses = {
@@ -203,8 +199,8 @@ lspconfig.gopls.setup({
         staticcheck = true,
       },
     },
-    on_attach = on_attach
-})
+}
+vim.lsp.enable('gopls')
 
 -- Rust
 vim.lsp.config['rust-analyzer'] = {
@@ -215,7 +211,6 @@ vim.lsp.config['rust-analyzer'] = {
   cmd = { 'rust-analyzer' },
   filetypes = { 'rs', 'rust' },
   root_markers = { '.git', 'Cargo.toml' },
-  on_attach = on_attach,
 }
 vim.lsp.enable('rust-analyzer')
 

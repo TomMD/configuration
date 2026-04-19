@@ -130,7 +130,7 @@
             # Git configuration with diff-so-fancy
             programs.git = {
               enable = true;
-              extraConfig = {
+              settings = {
                 core.pager = "diff-so-fancy | less --tabs=4 -RFX";
                 color.ui = true;
               };
