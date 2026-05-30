@@ -3,9 +3,10 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-26.05";
     home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:nix-community/home-manager/release-26.05";
+      inputs.nixpkgs.follows = "nixpkgs-stable";
     };
   };
 
@@ -41,7 +42,7 @@
             {
               home.username = username; 
               home.homeDirectory = homeDirectory;
-            home.stateVersion = "23.05";
+              home.stateVersion = "23.05";
 
             # Install packages from your current nix profile
             home.packages = with pkgs; [
@@ -177,9 +178,10 @@
               vimAlias = true;
               withNodeJs = true;
               withPython3 = true;
+              withRuby = false;
               
               # Read the local init.lua file and use it as extraLuaConfig
-              extraLuaConfig = builtins.readFile ./init.lua;
+              initLua = builtins.readFile ./init.lua;
               
               extraPackages = with pkgs; [
                 # LSP servers and tools (already included above but explicit here)
