@@ -54,7 +54,6 @@
               postgresql
               ripgrep
               tmux
-              vault
               # Additional packages for Neovim plugins, incl Rust, Go, Haskell
               nodejs
               python3
