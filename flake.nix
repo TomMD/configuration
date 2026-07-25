@@ -103,6 +103,9 @@
               };
               
               initContent = ''
+                # Prompt: user@host <2-level cwd> %
+                export PROMPT='%n@%m %2~%% '
+
                 # Vi mode keybindings
                 bindkey -v
                 bindkey -M viins 'jk' vi-cmd-mode

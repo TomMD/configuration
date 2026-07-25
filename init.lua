@@ -55,7 +55,7 @@ Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'joshdick/onedark.vim'
 
 -- AI assistance
-Plug 'github/copilot.vim'
+-- Plug 'github/copilot.vim'
 Plug 'coder/claudecode.nvim'
 
 vim.call('plug#end')
@@ -63,7 +63,7 @@ vim.call('plug#end')
 -- General settings
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
-vim.lsp.set_log_level("info")
+vim.lsp.log.set_level("info")
 
 -- Basic options
 vim.opt.backspace = 'indent,eol,start'
@@ -169,6 +169,16 @@ vim.api.nvim_create_autocmd('LspAttach', {
 require("mason").setup {}
 
 -- Haskell
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "haskell",
+  callback = function()
+    vim.opt_local.expandtab = true
+    vim.opt_local.shiftwidth = 4
+    vim.opt_local.softtabstop = 4
+    vim.opt_local.tabstop = 4
+  end,
+})
+
 vim.lsp.config['hls'] = {
     settings = {
        haskell = {
