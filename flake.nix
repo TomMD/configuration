@@ -146,7 +146,7 @@
               terminal = "screen-256color";
               keyMode = "vi";
               extraConfig = ''
-                set-option -g default-shell /bin/zsh
+                set-option -g default-shell ${if pkgs.stdenv.isDarwin then "/bin/zsh" else "${pkgs.zsh}/bin/zsh"}
                 unbind-key C-b
                 bind-key C-j send-prefix
                 
